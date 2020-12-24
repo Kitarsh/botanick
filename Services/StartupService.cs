@@ -3,10 +3,11 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace botanick.Services
+namespace BotANick.Services
 {
     public class StartupService
     {
@@ -37,7 +38,9 @@ namespace botanick.Services
             await _discord.LoginAsync(TokenType.Bot, discordToken);     // Login to discord
             await _discord.StartAsync();                                // Connect to the websocket
 
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _provider);     // Load commands and modules into the command service
+            var projectAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName.Contains("BotANick"));
+
+            await _commands.AddModulesAsync(projectAssembly, _provider);     // Load commands and modules into the command service
         }
     }
 }

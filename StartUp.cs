@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using botanick.Services;
+using BotANick.Services;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetEscapades.Configuration.Yaml;
 
-namespace botanick
+namespace BotANick
 {
     public class Startup
     {
@@ -18,7 +18,7 @@ namespace botanick
         {
             var builder = new ConfigurationBuilder()        // Create a new instance of the config builder
                 .SetBasePath(AppContext.BaseDirectory)      // Specify the default location for the config file
-                .AddYamlFile("E:\\VisualStudioProjects\\DiscordBot\\botanick\\_config.yml");                // Add this (yaml encoded) file to the configuration
+                .AddYamlFile("E:\\VisualStudioProjects\\DiscordBot\\BotANick\\_config.yml");                // Add this (yaml encoded) file to the configuration
             Configuration = builder.Build();                // Build the configuration
         }
 
@@ -38,7 +38,7 @@ namespace botanick
             provider.GetRequiredService<CommandHandler>(); 		// Start the command handler service
 
             await provider.GetRequiredService<StartupService>().StartAsync();       // Start the startup service
-            await Task.Delay(-1);                               // Keep the program alive
+            //await Task.Delay(-1);                               // Keep the program alive
         }
 
         private void ConfigureServices(IServiceCollection services)

@@ -338,3 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Customs - Project Specific ignore
+botanick_data.db*
+Migrations/

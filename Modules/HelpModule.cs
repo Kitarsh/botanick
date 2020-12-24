@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace botanick.Modules
+namespace BotANick.Modules
 {
     public class HelpModule : ModuleBase<SocketCommandContext>
     {
@@ -25,7 +25,7 @@ namespace botanick.Modules
             var builder = new EmbedBuilder()
             {
                 Color = new Color(114, 137, 218),
-                Description = "Voici les commandes utilisables"
+                Description = "Voici les commandes utilisables",
             };
 
             foreach (var module in _service.Modules)
@@ -57,7 +57,7 @@ namespace botanick.Modules
         public async Task HelpAsync(string commande)
         {
             var result = _service.Search(Context, commande);
-
+            
             if (!result.IsSuccess)
             {
                 await ReplyAsync($"Désolé, je n'ai pas trouvé de commmande comme **{commande}**.");

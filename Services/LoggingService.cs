@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace botanick.Services
+namespace BotANick.Services
 {
     public class LoggingService
     {
@@ -34,7 +34,7 @@ namespace botanick.Services
             if (!File.Exists(_logFile))               // Create today's log file if it doesn't exist
                 File.Create(_logFile).Dispose();
 
-            string logText = $"{DateTime.UtcNow.ToString("hh:mm:ss")} [{msg.Severity}] {msg.Source}: {msg.Exception?.ToString() ?? msg.Message}";
+            string logText = $"{DateTime.Now:hh:mm:ss} [{msg.Severity}] {msg.Source}: {msg.Exception?.ToString() ?? msg.Message}";
             File.AppendAllText(_logFile, logText + "\n");     // Write the log text to a file
 
             return Console.Out.WriteLineAsync(logText);       // Write the log text to the console

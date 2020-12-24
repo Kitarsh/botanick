@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using botanick.Modules;
+using BotANick.Modules;
 using Discord;
 using Discord.WebSocket;
 
 
-namespace botanick
+namespace BotANick
 {
 	public class Program
 	{
