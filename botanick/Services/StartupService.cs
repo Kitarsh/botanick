@@ -31,6 +31,7 @@ namespace BotANick.Services
 
         public async Task StartAsync()
         {
+            TwitchLogs.SetDiscordClient(_discord);
             string discordToken = _config["tokens:discord"];     // Get the discord token from the config file
             if (string.IsNullOrWhiteSpace(discordToken))
                 throw new Exception("Please enter your bot's token into the `_configuration.json` file found in the applications root directory.");

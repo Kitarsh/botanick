@@ -7,7 +7,7 @@ namespace BotANick.Services
 {
     public static class MessageService
     {
-        public static async Task WriteInBotSpam(SocketTextChannel channel, string msg)
+        public static async Task WriteInChannel(SocketTextChannel channel, string msg)
         {
             await channel.SendMessageAsync(msg);
         }
