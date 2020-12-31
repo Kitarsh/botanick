@@ -56,10 +56,5 @@ namespace BotANick.Modules
             await messageToReact.AddReactionAsync(new Emoji("🇦"));
             await messageToReact.AddReactionAsync(new Emoji("🇯"));
         }
-
-        [Command("test")]
-        public async Task TestTwitchBot()
-        {
-        }
     }
 }

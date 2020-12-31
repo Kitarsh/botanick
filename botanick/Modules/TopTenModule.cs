@@ -125,7 +125,8 @@ namespace BotANick.Modules
             await UpdatePlayers();
             if (_indexCapten == null)
             {
-                throw new NullReferenceException(nameof(_indexCapten));
+                await ReplyAsync("Personne ne joue !");
+                return;
             }
 
             if (_themes.Count == 0)
@@ -183,7 +184,7 @@ namespace BotANick.Modules
             }
 
             // Mise à jour du CapTen.
-            if (_indexCapten == null)
+            if (_indexCapten == null && _users.Count > 0)
             {
                 // Si le CapTen n'a jamais été défini, c'est le premier de la liste.
                 _indexCapten = 0;

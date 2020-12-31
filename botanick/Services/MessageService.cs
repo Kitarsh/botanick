@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,9 +8,16 @@ namespace BotANick.Services
 {
     public static class MessageService
     {
-        public static async Task WriteInChannel(SocketTextChannel channel, string msg)
+        public static async Task<RestUserMessage> WriteInChannel(SocketTextChannel channel, string msg)
         {
-            await channel.SendMessageAsync(msg);
+            var restMsg = await channel.SendMessageAsync(msg);
+            return restMsg;
+        }
+
+        public static async Task<RestUserMessage> WriteInChannel(SocketTextChannel channel, EmbedBuilder builder)
+        {
+            var restMsg = await channel.SendMessageAsync("", false, builder.Build());
+            return restMsg;
         }
 
         public static async Task ReactWithEmoteAsync(SocketUserMessage userMsg, Emoji emote)

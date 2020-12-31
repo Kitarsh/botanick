@@ -7,8 +7,9 @@ namespace BotANick.Data
     {
         public DbSet<TopTenTheme> TopTenTheme{ get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite("Data Source=BotANick_data.db");
-    }
+        public DbSet<Idee> Idee { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+            => options.UseSqlite("Data Source=botanick_data.db");
+    }
 }

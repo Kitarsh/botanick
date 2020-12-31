@@ -32,6 +32,7 @@ namespace BotANick.Services
         public async Task StartAsync()
         {
             TwitchLogs.SetDiscordClient(_discord);
+            IdeeService.SetDiscordClient(_discord);
             string discordToken = _config["tokens:discord"];     // Get the discord token from the config file
             if (string.IsNullOrWhiteSpace(discordToken))
                 throw new Exception("Please enter your bot's token into the `_configuration.json` file found in the applications root directory.");
@@ -42,6 +43,8 @@ namespace BotANick.Services
             var projectAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName.Contains("BotANick"));
 
             await _commands.AddModulesAsync(projectAssembly, _provider);     // Load commands and modules into the command service
+
+            await IdeeService.UpdateBoiteIdees();
         }
     }
 }
