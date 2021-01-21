@@ -5,7 +5,7 @@ using TwitchLib.Client;
 using TwitchLib.Client.Events;
 using BotANick.Services;
 
-namespace TwitchBot.Helpers
+namespace TwitchBot.Services
 {
     public static class LogInDiscord
     {
