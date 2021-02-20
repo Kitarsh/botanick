@@ -6,13 +6,20 @@ using TwitchLib.Client.Events;
 
 namespace BotANick.Twitch.Modules
 {
-    static class Pub
+    public static class Pub
     {
-        public static void PubDiscord(TwitchClient client)
+        public static void PubDiscord()
         {
+            var client = Bot.client;
             var channel = client.GetJoinedChannel("Kitarsh");
             var msg = $"Rejoignez le Discord de la communauté : https://discord.gg/PjNqJSY9E6. Des récompenses et droits supplémentaires pour les subs !";
             client.SendMessage(channel, msg);
+        }
+
+        public static void PubStreamStart(string titleStream)
+        {
+            var msg = $"{titleStream} Rejoignez le stream sur http://www.twitch.tv/kitarsh !";
+            _ = Discord.Services.TwitchLogs.LogStreamStart(msg);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Timers;
 using TwitchLib.Client;
 using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
@@ -9,12 +8,13 @@ using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
 using BotANick.Twitch.Services;
 using BotANick.Twitch.Modules;
+using BotANick.Twitch.Api;
 
 namespace BotANick.Twitch
 {
     public class Bot
     {
-        private TwitchClient client;
+        public static TwitchClient client;
 
         public Bot()
         {
@@ -39,11 +39,11 @@ namespace BotANick.Twitch
 
             client.Connect();
 
-            // Timer to write in chat every X time.
-            var timer = new Timer(new TimeSpan(0, 30, 0).TotalMilliseconds);
-            // Hook up the Elapsed event for the timer.
-            //timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            var timeSpanPub = new TimeSpan(0, 30, 0);
+            var pubClock = new Clock(Pub.PubDiscord, timeSpanPub);
 
+            var timeSpanStreamStarted = new TimeSpan(0, 5, 0);
+            var streamStartedClock = new Clock(StreamInfo.CheckStreamStarted, timeSpanStreamStarted);
         }
 
         private void Client_OnLog(object sender, OnLogArgs e)
@@ -69,9 +69,10 @@ namespace BotANick.Twitch
             if (e.ChatMessage.Message.Contains("toto"))
             {
                 client.SendMessage(e.ChatMessage.Channel, "Votre langage est très évolué.");
-            } else if (e.ChatMessage.Message.Contains("!discord"))
+            }
+            else if (e.ChatMessage.Message.Contains("!discord"))
             {
-                Pub.PubDiscord(this.client);
+                Pub.PubDiscord();
             }
         }
 
@@ -92,14 +93,6 @@ namespace BotANick.Twitch
         private void Client_OnHostingStarted(object sender, OnHostingStartedArgs e)
         {
             Services.Discord.StreamStartAlert(client);
-
-        }
-
-
-        private void OnTimedEvent(object source, ElapsedEventArgs e)
-        {
-            Console.WriteLine("The Elapsed event was raised at {0}", e.SignalTime);
-            Pub.PubDiscord(this.client);
         }
     }
 }

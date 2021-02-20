@@ -11,6 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotANick.Twitch", "BotANick
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainConsole", "BotANick.MainConsole\MainConsole.csproj", "{A6B3C066-E75D-457D-A644-1AFD4E5617D8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{337FF2AF-0E92-4519-B5CC-B0AF9890CCFE}"
+	ProjectSection(SolutionItems) = preProject
+		CodeMaid.config = CodeMaid.config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

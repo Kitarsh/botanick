@@ -42,7 +42,7 @@ namespace BotANick.Discord.Services
         /// <summary>
         /// Envoie un message de démarrage de stream dans le channel dédié.
         /// </summary>
-        public static async Task LogStreamStart()
+        public static async Task LogStreamStart(string msg = null)
         {
             if (_discord == null)
             {
@@ -50,8 +50,13 @@ namespace BotANick.Discord.Services
                 return;
             }
 
+            if (msg == null)
+            {
+                msg = "Le stream de Kitarsh a démarré ! Rejoignez le sur : http://www.twitch.tv/kitarsh !!";
+            }
+
             var channel = _discord.GetChannel(idChannelInfoStream) as SocketTextChannel;
-            await MessageService.WriteInChannel(channel, "Le stream de Kitarsh a démarré ! Rejoignez le sur : http://www.twitch.tv/kitarsh !! @everyone");
+            await MessageService.WriteInChannel(channel, msg);
         }
     }
 }
