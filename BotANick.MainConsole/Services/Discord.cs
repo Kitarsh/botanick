@@ -10,19 +10,6 @@ namespace MainConsole.Services
         public static bool IsDiscordLaunched { get; set; } = false;
 
         /// <summary>
-        /// Initialise le projet Discord.
-        /// </summary>
-        public static void LaunchDiscord()
-        {
-            if (!IsDiscordLaunched)
-            {
-                IsDiscordLaunched = true;
-                var args = new string[0];
-                Dsc.Program.Main(args);
-            }
-        }
-
-        /// <summary>
         /// Lance une alerte Discord de début de stream.
         /// </summary>
         public static void StreamStart()

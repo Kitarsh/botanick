@@ -3,9 +3,9 @@ using srv = MainConsole.Services;
 
 namespace MainConsole
 {
-    internal class Program
+    public class Program
     {
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
             while (1 != 0)
@@ -14,7 +14,11 @@ namespace MainConsole
                 switch (command)
                 {
                     case "Discord":
-                        srv.Discord.LaunchDiscord();
+                        if (!srv.Discord.IsDiscordLaunched)
+                        {
+                            srv.Discord.IsDiscordLaunched = true;
+                            BotANick.Discord.Program.Main(args);
+                        }
                         break;
 
                     case "Twitch":
