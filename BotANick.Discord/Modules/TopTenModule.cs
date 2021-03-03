@@ -23,7 +23,8 @@ namespace BotANick.Discord.Modules
         /// La couleur principale de la charte graphique du jeu.
         /// </summary>
         private static Color _colorTopTen = new Color(20, 119, 134);
-        #endregion
+
+        #endregion Variable pour la classe.
 
         #region Variable le jeu. #TODO : Instancier.
 
@@ -46,7 +47,27 @@ namespace BotANick.Discord.Modules
         /// L'index de Cap'TEN dans la liste des utilisateurs.
         /// </summary>
         private static int? _indexCapten = null;
-        #endregion
+
+        public class TopTenModele
+        {
+            public TopTenModele()
+            {
+                this.Users = _users;
+                this.Themes = _themes;
+                this.IndexCapten = _indexCapten;
+                this.ColorTopTen = _colorTopTen;
+            }
+
+            public List<string> Users { get; set; }
+
+            public List<string> Themes { get; set; }
+
+            public int? IndexCapten { get; set; }
+
+            public Color ColorTopTen { get; set; }
+        }
+
+        #endregion Variable le jeu. #TODO : Instancier.
 
         [Command("regles")]
         [Summary("Donne les règles du jeu.")]
@@ -57,12 +78,9 @@ namespace BotANick.Discord.Modules
         [Summary("Permet aux joueurs de s'enregister")]
         public async Task RegisterByReactions()
         {
-            var builder = new EmbedBuilder()
-            {
-                Color = _colorTopTen,
-                Title = "TopTen",
-                Description = "Réagissez avec l'emote 💯 pour vous inscrire !",
-            };
+            EmbedBuilder builder = EmbedBuilderService.InitBuilder(new List<EmbedFieldBuilder>(),
+                                                                   _colorTopTen,
+                                                                   "Réagissez avec l'emote 💯 pour vous inscrire !");
 
             var msg = await Context.Channel.SendMessageAsync("", false, builder.Build());
 
@@ -100,20 +118,7 @@ namespace BotANick.Discord.Modules
                 return;
             }
 
-            var fields = new List<EmbedFieldBuilder>();
-            fields.Add(new EmbedFieldBuilder()
-            {
-                IsInline = false,
-                Name = "Liste des joueurs :",
-                Value = string.Join("\n    ", _users),
-            });
-
-            var builder = new EmbedBuilder()
-            {
-                Title = "TopTen",
-                Color = _colorTopTen,
-                Fields = fields
-            };
+            EmbedBuilder builder = EmbedBuilderService.GenerateBuilderReadRegister(_users, _colorTopTen);
 
             await ReplyAsync("", false, builder.Build());
         }
@@ -136,33 +141,7 @@ namespace BotANick.Discord.Modules
 
             var theme = _themes[0];
             _themes.RemoveAt(0);
-
-            var builder = new EmbedBuilder()
-            {
-                Title = "TopTen",
-                Color = _colorTopTen,
-            };
-
-            builder.AddField(f =>
-            {
-                f.IsInline = false;
-                f.Name = "Le thème est le suivant :";
-                f.Value = theme;
-            });
-
-            builder.AddField(f =>
-            {
-                f.IsInline = false;
-                f.Name = "Le Cap'TEN est :";
-                f.Value = _users[_indexCapten.Value];
-            });
-
-            builder.AddField(f =>
-            {
-                f.IsInline = false;
-                f.Name = "Tirage des numéros :";
-                f.Value = TopTenService.GenerateNumbers(_users);
-            });
+            EmbedBuilder builder = EmbedBuilderService.GenerateBuilderForNumberDisplay(theme, _users, _indexCapten, _colorTopTen);
 
             await ReplyAsync("", false, builder.Build());
         }

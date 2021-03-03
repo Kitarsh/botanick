@@ -5,7 +5,7 @@ using BotANick.Core.Data;
 
 namespace BotANick.Discord.Services
 {
-    static class TopTenService
+    public static class TopTenService
     {
         static private int[] InitialNumbers = new int[10] {
             1,
@@ -39,12 +39,12 @@ namespace BotANick.Discord.Services
         }
 
         /// <summary>
-        /// Récupère un thème aléatoire depuis la base de données.
+        /// Récupère des thèmes aléatoires depuis la base de données.
         /// </summary>
         /// <returns>Le thème obtenu.</returns>
         static public List<string> GetRandomThemes()
         {
-            using(var dbContext = new DataContext())
+            using (var dbContext = new DataContext())
             {
                 Random rand = new Random();
                 int nbThemes = dbContext.TopTenTheme.Count();
@@ -56,7 +56,7 @@ namespace BotANick.Discord.Services
             }
         }
 
-        static private List<int> GetRandomList()
+        static public List<int> GetRandomList()
         {
             var rng = new Random();
             return InitialNumbers.OrderBy(n => rng.Next())

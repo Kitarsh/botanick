@@ -93,6 +93,7 @@ namespace BotANick.Discord.Services
 
             return builder;
         }
+
         public static EmbedBuilder GetBuilderFromIdee(Idee idee)
         {
             var builder = new EmbedBuilder()
@@ -155,7 +156,6 @@ namespace BotANick.Discord.Services
                 boiteChannel = _discord.GetChannel(_idBoiteChannel) as SocketTextChannel;
             }
 
-
             if (dbContext.Idee.Count() > 100)
             {
                 await MessageService.WriteInChannel(boiteChannel, "Il y a trop d'idée dans la boîte à idée ! L'update ne fonctionne pas.");
@@ -189,7 +189,6 @@ namespace BotANick.Discord.Services
                 idee.IdMsgDiscord = await ShowIdeeInBoite(idee);
             }
             dbContext.SaveChanges();
-
 
             foreach (var idee in idees)
             {
