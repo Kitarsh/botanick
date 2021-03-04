@@ -5,7 +5,7 @@ using BotANick.Core.Data;
 using Discord;
 using FluentAssertions;
 using Xunit;
-using mdl = BotANick.Discord.Modules;
+using mod = BotANick.Discord.Modeles;
 using srv = BotANick.Discord.Services;
 
 namespace BotANick.Tests.Discord
@@ -15,7 +15,7 @@ namespace BotANick.Tests.Discord
         [Fact]
         public void ShouldReturnTopTenBuilder()
         {
-            var args = new mdl.TopTenModule.TopTenModele();
+            var args = new mod.TopTenGame();
 
             var builder = srv.EmbedBuilderService.InitBuilder(new List<EmbedFieldBuilder>(), args.ColorTopTen);
 
@@ -26,7 +26,7 @@ namespace BotANick.Tests.Discord
         [Fact]
         public void ShouldReturnTopTenThemeBuilder()
         {
-            var args = new mdl.TopTenModule.TopTenModele();
+            var args = new mod.TopTenGame();
             var builder = srv.EmbedBuilderService.GenerateBuilderForNumberDisplay("toto", args.Users, args.IndexCapten, args.ColorTopTen);
 
             var stringifiedBuilder = srv.ExtensionsEmbedBuilder.ToString(builder);
@@ -36,7 +36,7 @@ namespace BotANick.Tests.Discord
         [Fact]
         public void ShouldReturnTopTenPlayersBuilder()
         {
-            var args = new mdl.TopTenModule.TopTenModele();
+            var args = new mod.TopTenGame();
             var builder = srv.EmbedBuilderService.GenerateBuilderReadRegister(new List<string> { "toto" }, args.ColorTopTen);
 
             var stringifiedBuilder = srv.ExtensionsEmbedBuilder.ToString(builder);

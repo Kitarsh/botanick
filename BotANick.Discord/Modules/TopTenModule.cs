@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BotANick.Discord.Services;
 using System;
+using BotANick.Discord.Modeles;
 
 namespace BotANick.Discord.Modules
 {
@@ -12,62 +13,7 @@ namespace BotANick.Discord.Modules
     [Group("TopTen")]
     public class TopTenModule : ModuleBase<SocketCommandContext>
     {
-        #region Variable pour la classe.
-
-        /// <summary>
-        ///  L'émoji utilisée pour s'enregister.
-        /// </summary>
-        private static Emoji _registerEmoteChar = new Emoji(char.ConvertFromUtf32(0x1F4AF));
-
-        /// <summary>
-        /// La couleur principale de la charte graphique du jeu.
-        /// </summary>
-        private static Color _colorTopTen = new Color(20, 119, 134);
-
-        #endregion Variable pour la classe.
-
-        #region Variable le jeu. #TODO : Instancier.
-
-        /// <summary>
-        /// L'identifiant Discord du message d'enregistrement.
-        /// </summary>
-        private static ulong _registerMsgId = 0;
-
-        /// <summary>
-        /// La liste des utilisateurs enregistrés pour le jeu.
-        /// </summary>
-        private static List<string> _users = new List<string> { };
-
-        /// <summary>
-        /// La liste des thèmes utilisés pour jouer.
-        /// </summary>
-        private static List<string> _themes = new List<string> { };
-
-        /// <summary>
-        /// L'index de Cap'TEN dans la liste des utilisateurs.
-        /// </summary>
-        private static int? _indexCapten = null;
-
-        public class TopTenModele
-        {
-            public TopTenModele()
-            {
-                this.Users = _users;
-                this.Themes = _themes;
-                this.IndexCapten = _indexCapten;
-                this.ColorTopTen = _colorTopTen;
-            }
-
-            public List<string> Users { get; set; }
-
-            public List<string> Themes { get; set; }
-
-            public int? IndexCapten { get; set; }
-
-            public Color ColorTopTen { get; set; }
-        }
-
-        #endregion Variable le jeu. #TODO : Instancier.
+        private static TopTenGame _topten = new TopTenGame();
 
         [Command("regles")]
         [Summary("Donne les règles du jeu.")]
@@ -79,31 +25,29 @@ namespace BotANick.Discord.Modules
         public async Task RegisterByReactions()
         {
             EmbedBuilder builder = EmbedBuilderService.InitBuilder(new List<EmbedFieldBuilder>(),
-                                                                   _colorTopTen,
+                                                                   _topten.ColorTopTen,
                                                                    "Réagissez avec l'emote 💯 pour vous inscrire !");
 
             var msg = await Context.Channel.SendMessageAsync("", false, builder.Build());
+            await msg.AddReactionAsync(_topten.RegisterEmoteChar);
 
-            await msg.AddReactionAsync(_registerEmoteChar);
-            _registerMsgId = msg.Id;
+            _topten.StoreRegisterMsg(msg.Id);
         }
 
         [Command("registerme")]
-        [Summary("DEPRECATED : Ajoute le joueur")]
+        [Summary("Ajoute le joueur")]
         public async Task RegisterUser()
         {
-            var caller = Context.Message.Author.Username;
-            _users.Add(caller);
-            await ReplyAsync($"{_users.LastOrDefault()} est ajouté à la liste des joueurs !");
+            var user = Context.Message.Author.Username;
+            _topten.RegisterUser(user);
+            await ReplyAsync($"{_topten.Users.LastOrDefault()} est ajouté à la liste des joueurs !");
         }
 
         [Command("clear")]
         [Summary("Nettoie la liste des joueurs et les thèmes déjà utilisés.")]
         public async Task ClearRegister()
         {
-            _users.Clear();
-            _themes.Clear();
-            _registerMsgId = 0;
+            _topten.Clear();
             await ReplyAsync("La liste des joueurs a été vidée !");
         }
 
@@ -112,13 +56,13 @@ namespace BotANick.Discord.Modules
         public async Task ReadRegister()
         {
             await UpdatePlayers();
-            if (_users.Count == 0)
+            if (_topten.Users.Count == 0)
             {
                 await ReplyAsync("Personne ne joue !");
                 return;
             }
 
-            EmbedBuilder builder = EmbedBuilderService.GenerateBuilderReadRegister(_users, _colorTopTen);
+            EmbedBuilder builder = EmbedBuilderService.GenerateBuilderReadRegister(_topten.Users, _topten.ColorTopTen);
 
             await ReplyAsync("", false, builder.Build());
         }
@@ -128,20 +72,19 @@ namespace BotANick.Discord.Modules
         public async Task GenerateNumbers()
         {
             await UpdatePlayers();
-            if (_indexCapten == null)
+            if (_topten.IndexCapten == null)
             {
                 await ReplyAsync("Personne ne joue !");
                 return;
             }
 
-            if (_themes.Count == 0)
+            if (_topten.Themes.Count == 0)
             {
-                _themes = TopTenService.GetRandomThemes();
+                _topten.Themes = TopTenService.GetRandomThemes();
             }
 
-            var theme = _themes[0];
-            _themes.RemoveAt(0);
-            EmbedBuilder builder = EmbedBuilderService.GenerateBuilderForNumberDisplay(theme, _users, _indexCapten, _colorTopTen);
+            var theme = _topten.GetNextTheme();
+            EmbedBuilder builder = EmbedBuilderService.GenerateBuilderForNumberDisplay(theme, _topten.Users, _topten.IndexCapten, _topten.ColorTopTen);
 
             await ReplyAsync("", false, builder.Build());
         }
@@ -152,32 +95,16 @@ namespace BotANick.Discord.Modules
         private async Task UpdatePlayers()
         {
             // Mise à jour de la liste des joueurs.
-            if (_registerMsgId != 0)
+            if (_topten.RegisterMsgId != 0)
             {
-                var registerMsg = await Context.Channel.GetMessageAsync(_registerMsgId);
-                var registeredUsers = await registerMsg.GetReactionUsersAsync(_registerEmoteChar, 11).FirstOrDefaultAsync();
-                _users = registeredUsers.Where(u => !u.IsBot)
-                                        .OrderBy(u => u.Username)
-                                        .Select(u => u.Username)
-                                        .ToList();
+                var registerMsg = await Context.Channel.GetMessageAsync(_topten.RegisterMsgId);
+                var registeredUsers = await registerMsg.GetReactionUsersAsync(_topten.RegisterEmoteChar, 11).FirstOrDefaultAsync();
+                _topten.RegisterUser(registeredUsers.Where(u => !u.IsBot)
+                                                    .Select(u => u.Username)
+                                                    .ToList());
             }
 
-            // Mise à jour du CapTen.
-            if (_indexCapten == null && _users.Count > 0)
-            {
-                // Si le CapTen n'a jamais été défini, c'est le premier de la liste.
-                _indexCapten = 0;
-            }
-            else
-            {
-                //Sinon, on passe au suivant dans la liste.
-                _indexCapten += 1;
-                if (_indexCapten >= _users.Count)
-                {
-                    // Si l'index de CapTen dépasse la taille de la liste, on revient au début de la liste.
-                    _indexCapten = 0;
-                }
-            }
+            _topten.NextCapten();
         }
     }
 }
