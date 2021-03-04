@@ -41,18 +41,18 @@ namespace BotANick.Discord.Services
 
     public class EmbedBuilderService
     {
-        public static EmbedBuilder GenerateBuilderForNumberDisplay(string theme, List<string> users, int? indexCapten, Color colorTopTen)
+        public static EmbedBuilder GenerateBuilderForNumberDisplay(Modeles.TopTenGame topTen, string theme)
         {
-            string numbers = TopTenService.GenerateNumbers(users);
+            string numbers = TopTenService.GenerateNumbers(topTen.Users);
 
             var fields = new List<EmbedFieldBuilder>
             {
                 ExtensionsEmbedFieldBuilder.Create("Le thème est le suivant :", theme),
-                ExtensionsEmbedFieldBuilder.Create("Le Cap'TEN est :", users.Count > 0 ? users[indexCapten.Value] : "No captain"),
-                ExtensionsEmbedFieldBuilder.Create("Tirage des numéros :",string.IsNullOrEmpty(numbers) ? "No players" : numbers),
+                ExtensionsEmbedFieldBuilder.Create("Le Cap'TEN est :", topTen.Capten),
+                ExtensionsEmbedFieldBuilder.Create("Tirage des numéros :", string.IsNullOrEmpty(numbers) ? "No players" : numbers),
             };
 
-            return InitBuilder(fields, colorTopTen);
+            return InitBuilder(fields, topTen.ColorTopTen);
         }
 
         public static EmbedBuilder InitBuilder(List<EmbedFieldBuilder> fields, Color colorTopTen, string Description = null)

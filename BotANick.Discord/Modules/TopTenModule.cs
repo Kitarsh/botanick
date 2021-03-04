@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BotANick.Discord.Services;
 using System;
 using BotANick.Discord.Modeles;
+using BotANick.Core.Data;
 
 namespace BotANick.Discord.Modules
 {
@@ -80,11 +81,14 @@ namespace BotANick.Discord.Modules
 
             if (_topten.Themes.Count == 0)
             {
-                _topten.Themes = TopTenService.GetRandomThemes();
+                using (var dbContext = new SqlLiteContext())
+                {
+                    _topten.Themes = TopTenService.GetRandomThemes(dbContext);
+                }
             }
 
             var theme = _topten.GetNextTheme();
-            EmbedBuilder builder = EmbedBuilderService.GenerateBuilderForNumberDisplay(theme, _topten.Users, _topten.IndexCapten, _topten.ColorTopTen);
+            EmbedBuilder builder = EmbedBuilderService.GenerateBuilderForNumberDisplay(_topten, theme);
 
             await ReplyAsync("", false, builder.Build());
         }

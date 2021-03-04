@@ -42,18 +42,15 @@ namespace BotANick.Discord.Services
         /// Récupère des thèmes aléatoires depuis la base de données.
         /// </summary>
         /// <returns>Le thème obtenu.</returns>
-        static public List<string> GetRandomThemes()
+        static public List<string> GetRandomThemes(IDataContext dbContext)
         {
-            using (var dbContext = new DataContext())
-            {
-                Random rand = new Random();
-                int nbThemes = dbContext.TopTenTheme.Count();
+            Random rand = new Random();
+            int nbThemes = dbContext.TopTenTheme.Count();
 
-                return dbContext.TopTenTheme.AsEnumerable()
-                                            .Select(ttt => ttt.Theme)
-                                            .OrderBy(t => rand.Next())
-                                            .ToList();
-            }
+            return dbContext.TopTenTheme.AsEnumerable()
+                                        .Select(ttt => ttt.Theme)
+                                        .OrderBy(t => rand.Next())
+                                        .ToList();
         }
 
         static public List<int> GetRandomList()

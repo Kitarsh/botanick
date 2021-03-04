@@ -27,10 +27,10 @@ namespace BotANick.Tests.Discord
         public void ShouldReturnTopTenThemeBuilder()
         {
             var args = new mod.TopTenGame();
-            var builder = srv.EmbedBuilderService.GenerateBuilderForNumberDisplay("toto", args.Users, args.IndexCapten, args.ColorTopTen);
+            var builder = srv.EmbedBuilderService.GenerateBuilderForNumberDisplay(args, "toto");
 
             var stringifiedBuilder = srv.ExtensionsEmbedBuilder.ToString(builder);
-            stringifiedBuilder.Should().Be("TopTen, , #147786, , Le thème est le suivant :, toto, Le Cap'TEN est :, No captain, Tirage des numéros :, No players, ");
+            stringifiedBuilder.Should().Be("TopTen, , #147786, , Le thème est le suivant :, toto, Le Cap'TEN est :, No Capten was selected, Tirage des numéros :, No players, ");
         }
 
         [Fact]

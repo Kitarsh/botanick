@@ -62,6 +62,21 @@ namespace BotANick.Discord.Modeles
             }
         }
 
+        public string Capten
+        {
+            get
+            {
+                if (IndexCapten.HasValue)
+                {
+                    return this.Users[IndexCapten.Value];
+                }
+                else
+                {
+                    return "No Capten was selected";
+                }
+            }
+        }
+
         public void RegisterUser(string player)
         {
             if (!IsUserRegistered(player))

@@ -32,7 +32,7 @@ namespace BotANick.Discord.Services
 
         public static Idee AddIdeeFromMessage(SocketUserMessage msg, string descriptionIdee)
         {
-            using (var dbcontext = new DataContext())
+            using (var dbcontext = new SqlLiteContext())
             {
                 var newIdee = new Idee()
                 {
@@ -52,7 +52,7 @@ namespace BotANick.Discord.Services
 
         public static EmbedBuilder GetBuilderFromIdee(int ideeId)
         {
-            using var dbcontext = new DataContext();
+            using var dbcontext = new SqlLiteContext();
             var idee = dbcontext.Idee
                                 .FirstOrDefault(i => i.IdeeId == ideeId);
 
@@ -147,7 +147,7 @@ namespace BotANick.Discord.Services
 
         public static async Task UpdateBoiteIdees()
         {
-            using var dbContext = new DataContext();
+            using var dbContext = new SqlLiteContext();
             var boiteChannel = _discord.GetChannel(_idBoiteChannel) as SocketTextChannel;
             while (boiteChannel == null)
             {

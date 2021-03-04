@@ -34,14 +34,6 @@ namespace BotANick.Tests.Discord
             numbers1.Should().NotBeInAscendingOrder();
         }
 
-        //[Fact]
-        //public void ShouldTopTenReturnTheme()
-        //{
-        //    var themes = srv.TopTenService.GetRandomThemes();
-
-        //    themes.Should().BeOfType(typeof(List<string>));
-        //}
-
         [Fact]
         public void ShouldGenerateEmptyForNoPlayers()
         {
@@ -320,6 +312,18 @@ namespace BotANick.Tests.Discord
         }
 
         [Fact]
+        public void ShouldHaveCorrectCaptenAfter1Distribution()
+        {
+            var topTenGame = new mod.TopTenGame();
+            const string expectedCapten = "The Capten";
+            topTenGame.RegisterUser(expectedCapten);
+
+            topTenGame.NextCapten();
+
+            topTenGame.Capten.Should().Be(expectedCapten);
+        }
+
+        [Fact]
         public void ShouldNotHaveCaptenAfter1DistributionAndAClear()
         {
             var topTenGame = new mod.TopTenGame();
@@ -392,6 +396,50 @@ namespace BotANick.Tests.Discord
 
             theme.Should().Be(expectedTheme);
             topTenGame.Themes.Should().BeEquivalentTo(expectedThemesList);
+        }
+
+        [Fact]
+        public void ShouldCreateThemeFromDataBase()
+        {
+            using (var context = new DataInMemoryContext())
+            {
+                var expectedTheme = new TopTenTheme
+                {
+                    Theme = "New Theme",
+                };
+
+                context.TopTenTheme.Add(expectedTheme);
+                context.SaveChanges();
+
+                var themeFromDataBase = context.TopTenTheme.FirstOrDefault();
+
+                themeFromDataBase.Should().Be(expectedTheme);
+            }
+        }
+
+        [Fact]
+        public void ShouldGetThemeFromDataBase()
+        {
+            using (var context = new DataInMemoryContext())
+            {
+                context.TopTenTheme.RemoveRange(context.TopTenTheme);
+                var topTenGame = new mod.TopTenGame();
+
+                var arrayOfThemes = GetArrayOfThemes();
+                var arrayOfTopTenTheme = arrayOfThemes.Select(t => new TopTenTheme { Theme = t })
+                                                      .ToArray();
+                context.TopTenTheme.AddRange(arrayOfTopTenTheme);
+                context.SaveChanges();
+
+                var themes = BotANick.Discord.Services.TopTenService.GetRandomThemes(context);
+
+                arrayOfThemes.Should().BeEquivalentTo(themes);
+
+                foreach (string theme in arrayOfThemes)
+                {
+                    theme.Should().BeOneOf(themes);
+                }
+            }
         }
 
         private static void Add5PlayersToGame(mod.TopTenGame topTenGame)
