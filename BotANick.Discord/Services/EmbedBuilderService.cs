@@ -26,7 +26,7 @@ namespace BotANick.Discord.Services
 
     public static class ExtensionsEmbedBuilder
     {
-        public static string ToString(this EmbedBuilder eb)
+        public static string ToStringCustom(this EmbedBuilder eb)
         {
             var fieldsStringList = new List<string>();
 

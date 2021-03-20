@@ -7,6 +7,8 @@ namespace BotANick.Core.Data
 {
     public class Idee
     {
+        private bool _hasBeenModified = false;
+
         /// <summary>
         /// L'identifiant de l'idée.
         /// </summary>
@@ -41,5 +43,15 @@ namespace BotANick.Core.Data
         /// L'identifiant du message discord de l'idée.
         /// </summary>
         public ulong? IdMsgDiscord { get; set; }
+
+        public bool IsModified()
+        {
+            return _hasBeenModified;
+        }
+
+        public void Modify()
+        {
+            _hasBeenModified = true;
+        }
     }
 }

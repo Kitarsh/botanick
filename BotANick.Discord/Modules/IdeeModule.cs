@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BotANick.Core.Data;
 using BotANick.Core.Data.Constantes;
 using BotANick.Discord.Services;
+using BotANick.Discord.Modeles;
 
 namespace BotANick.Discord.Modules
 {
@@ -20,17 +21,15 @@ namespace BotANick.Discord.Modules
         [Summary("Ajoute une idée dans la boîte à idée.")]
         public async Task AddIdees(string descriptionIdee)
         {
-            var idee = IdeeService.AddIdeeFromMessage(Context.Message, descriptionIdee);
-            var builder = IdeeService.GetBuilderFromIdee(idee.IdeeId);
-
-            await ReplyAsync("", false, builder.Build());
+            var idee = await BoiteAIdeeService.AddIdeeFromMessage(Context.Message, descriptionIdee);
+            await ReplyAsync("", false, idee.GetBuilder().Build());
         }
 
         [Command("update")]
         [Summary("Mets à jour la boîte à idée.")]
         public async Task UpdateBoiteIdees()
         {
-            await IdeeService.UpdateBoiteIdees();
+            await BoiteAIdeeService.UpdateBoiteIdees();
         }
     }
 }
