@@ -94,9 +94,9 @@ namespace BotANick.Discord.Services
                 var msgIdee = await boiteChannel.GetMessageAsync(idee.IdMsgDiscord.Value);
                 UpdateNombreVoteIdee(idee, msgIdee);
                 UpdateEtatIdee(idee, msgIdee);
-                if (idee.IsModified())
+                var msg = msgs.FirstOrDefault(msg => msg.Id == idee.IdMsgDiscord) as RestUserMessage;
+                if (idee.IsModified() && msg != null)
                 {
-                    var msg = msgs.FirstOrDefault(msg => msg.Id == idee.IdMsgDiscord) as RestUserMessage;
                     await msg.ModifyAsync(m =>
                     {
                         m.Embed = idee.GetBuilder().Build();
