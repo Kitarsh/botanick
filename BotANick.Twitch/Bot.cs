@@ -64,16 +64,7 @@ namespace BotANick.Twitch
 
         private void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            if (e.ChatMessage.Message.Contains("badword"))
-                client.TimeoutUser(e.ChatMessage.Channel, e.ChatMessage.Username, TimeSpan.FromMinutes(30), "Bad word! 30 minute timeout!");
-            if (e.ChatMessage.Message.Contains("toto"))
-            {
-                client.SendMessage(e.ChatMessage.Channel, "Votre langage est très évolué.");
-            }
-            else if (e.ChatMessage.Message.Contains("!discord"))
-            {
-                Pub.PubDiscord();
-            }
+            CommandService.DoAction(e, client);
         }
 
         private void Client_OnWhisperReceived(object sender, OnWhisperReceivedArgs e)
