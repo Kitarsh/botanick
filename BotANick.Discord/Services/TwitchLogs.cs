@@ -56,7 +56,8 @@ namespace BotANick.Discord.Services
             }
 
             var channel = _discord.GetChannel(idChannelInfoStream) as SocketTextChannel;
-            await MessageService.WriteInChannel(channel, msg);
+            var discordMsg = await MessageService.WriteInChannel(channel, msg);
+            await discordMsg.CrosspostAsync();
         }
     }
 }

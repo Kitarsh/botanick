@@ -40,10 +40,10 @@ namespace BotANick.Twitch
             client.Connect();
 
             var timeSpanPub = new TimeSpan(0, 30, 0);
-            var pubClock = new Clock(Pub.PubDiscord, timeSpanPub);
+            var pubClock = new Clock(Pub.PubDiscord, timeSpanPub, "Pub Discord");
 
             var timeSpanStreamStarted = new TimeSpan(0, 5, 0);
-            var streamStartedClock = new Clock(StreamInfo.CheckStreamStarted, timeSpanStreamStarted);
+            var streamStartedClock = new Clock(StreamInfo.CheckStreamStarted, timeSpanStreamStarted, "Stream Start");
         }
 
         private void Client_OnLog(object sender, OnLogArgs e)

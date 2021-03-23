@@ -23,20 +23,27 @@ namespace BotANick.Twitch.Services
 
         private readonly FctAsyncToExecute _fctAsync;
 
-        public Clock(FctToExecute fct, TimeSpan timeSpan)
+        /// <summary>
+        /// Le nom de l'horloge.
+        /// </summary>
+        private readonly string Name;
+
+        public Clock(FctToExecute fct, TimeSpan timeSpan, string name)
         {
             // Hook up the Elapsed event for the timer.
             this._timer = new Timer(timeSpan.TotalMilliseconds);
             this._fct = fct;
+            this.Name = name;
             _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             _timer.Start();
         }
 
-        public Clock(FctAsyncToExecute fct, TimeSpan timeSpan)
+        public Clock(FctAsyncToExecute fct, TimeSpan timeSpan, string name)
         {
             // Hook up the Elapsed event for the timer.
             this._timer = new Timer(timeSpan.TotalMilliseconds);
             this._fctAsync = fct;
+            this.Name = name;
             _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             _timer.Start();
         }
@@ -72,6 +79,11 @@ namespace BotANick.Twitch.Services
             _timer.Stop();
         }
 
+        public string GetLog()
+        {
+            return $"The elapsed event on {this.Name} clock was raised at {DateTime.Now.ToString("HH:mm:ss")}";
+        }
+
         /// <summary>
         /// Exécute la fonction stockée lorsque le timer arrive à son terme.
         /// </summary>
@@ -79,7 +91,7 @@ namespace BotANick.Twitch.Services
         /// <param name="e">Les paramètres de la fin du temps.</param>
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            Console.WriteLine("The Elapsed event was raised at {0}", e.SignalTime);
+            Console.WriteLine(this.GetLog());
             if (_fct != null)
             {
                 _fct();
