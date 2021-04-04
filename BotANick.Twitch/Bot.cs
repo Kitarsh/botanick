@@ -14,8 +14,6 @@ namespace BotANick.Twitch
 {
     public class Bot
     {
-        public static TwitchClient client;
-
         public Bot()
         {
             ConnectionCredentials credentials = new ConnectionCredentials("bot_a_nick", Program.Configuration["tokens:oauth"]);
@@ -25,26 +23,27 @@ namespace BotANick.Twitch
                 ThrottlingPeriod = TimeSpan.FromSeconds(30)
             };
             WebSocketClient customClient = new WebSocketClient(clientOptions);
-            client = new TwitchClient(customClient);
-            client.Initialize(credentials, "Kitarsh");
+            Client = new TwitchClient(customClient);
+            Client.Initialize(credentials, "Kitarsh");
 
-            client.OnLog += Client_OnLog;
-            client.OnJoinedChannel += Client_OnJoinedChannel;
-            client.OnMessageReceived += Client_OnMessageReceived;
-            client.OnWhisperReceived += Client_OnWhisperReceived;
-            client.OnNewSubscriber += Client_OnNewSubscriber;
-            client.OnConnected += Client_OnConnected;
-            client.OnMessageReceived += Services.Discord.Log;
-            client.OnHostingStarted += Client_OnHostingStarted;
+            Client.OnLog += Client_OnLog;
+            Client.OnJoinedChannel += Client_OnJoinedChannel;
+            Client.OnMessageReceived += Client_OnMessageReceived;
+            Client.OnWhisperReceived += Client_OnWhisperReceived;
+            Client.OnNewSubscriber += Client_OnNewSubscriber;
+            Client.OnConnected += Client_OnConnected;
+            Client.OnMessageReceived += Services.Discord.Log;
 
-            client.Connect();
+            Client.Connect();
 
             var timeSpanPub = new TimeSpan(0, 30, 0);
-            var pubClock = new Clock(Pub.PubDiscord, timeSpanPub, "Pub Discord");
+            _ = new Clock(Pub.PubDiscord, timeSpanPub, "Pub Discord");
 
             var timeSpanStreamStarted = new TimeSpan(0, 5, 0);
-            var streamStartedClock = new Clock(StreamInfo.CheckStreamStarted, timeSpanStreamStarted, "Stream Start");
+            _ = new Clock(StreamInfo.CheckStreamStarted, timeSpanStreamStarted, "Stream Start");
         }
+
+        public static TwitchClient Client { get; set; }
 
         private void Client_OnLog(object sender, OnLogArgs e)
         {
@@ -59,31 +58,26 @@ namespace BotANick.Twitch
         private void Client_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
             Console.WriteLine("Hey guys! I am a bot connected via TwitchLib!");
-            client.SendMessage(e.Channel, "Hey guys! I am a bot connected via TwitchLib!");
+            Client.SendMessage(e.Channel, "Hey guys! I am a bot connected via TwitchLib!");
         }
 
         private void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            CommandService.DoAction(e, client);
+            CommandService.DoAction(e, Client);
         }
 
         private void Client_OnWhisperReceived(object sender, OnWhisperReceivedArgs e)
         {
             if (e.WhisperMessage.Username == "my_friend")
-                client.SendWhisper(e.WhisperMessage.Username, "Hey! Whispers are so cool!!");
+                Client.SendWhisper(e.WhisperMessage.Username, "Hey! Whispers are so cool!!");
         }
 
         private void Client_OnNewSubscriber(object sender, OnNewSubscriberArgs e)
         {
             if (e.Subscriber.SubscriptionPlan == SubscriptionPlan.Prime)
-                client.SendMessage(e.Channel, $"Welcome {e.Subscriber.DisplayName} to the substers! You just earned 500 points! So kind of you to use your Twitch Prime on this channel!");
+                Client.SendMessage(e.Channel, $"Welcome {e.Subscriber.DisplayName} to the substers! You just earned 500 points! So kind of you to use your Twitch Prime on this channel!");
             else
-                client.SendMessage(e.Channel, $"Welcome {e.Subscriber.DisplayName} to the substers! You just earned 500 points!");
-        }
-
-        private void Client_OnHostingStarted(object sender, OnHostingStartedArgs e)
-        {
-            Services.Discord.StreamStartAlert(client);
+                Client.SendMessage(e.Channel, $"Welcome {e.Subscriber.DisplayName} to the substers! You just earned 500 points!");
         }
     }
 }

@@ -15,12 +15,5 @@ namespace BotANick.Twitch.Services
             var msg = e.ChatMessage.Message;
             _ = TwitchLogs.LogTwitchChat(displayName, msg);
         }
-
-        public static void StreamStartAlert(TwitchClient client)
-        {
-            // TODO : Check with Twitch API the name of the stream and send it to Discord to display it.
-            //var channel = client.GetJoinedChannel("kitarsh");
-            _ = TwitchLogs.LogStreamStart();
-        }
     }
 }

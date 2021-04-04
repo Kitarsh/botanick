@@ -11,8 +11,6 @@ namespace BotANick.Discord
 {
     public class Startup
     {
-        public IConfigurationRoot Configuration { get; }
-
         public Startup(string[] args)
         {
             var builder = new ConfigurationBuilder()        // Create a new instance of the config builder
@@ -21,13 +19,15 @@ namespace BotANick.Discord
             Configuration = builder.Build();                // Build the configuration
         }
 
-        public static async Task RunAsync(string[] args)
+        public IConfigurationRoot Configuration { get; }
+
+        public static void RunAsync(string[] args)
         {
             var startup = new Startup(args);
-            await startup.RunAsync();
+            startup.RunAsync();
         }
 
-        public async Task RunAsync()
+        public void RunAsync()
         {
             var services = new ServiceCollection();             // Create a new instance of a service collection
             ConfigureServices(services);
@@ -36,7 +36,8 @@ namespace BotANick.Discord
             provider.GetRequiredService<LoggingService>();      // Start the logging service
             provider.GetRequiredService<CommandHandler>(); 		// Start the command handler service
 
-            await provider.GetRequiredService<StartupService>().StartAsync();       // Start the startup service
+            provider.GetRequiredService<StartupService>().Start();       // Start the startup service
+
             //await Task.Delay(-1);                               // Keep the program alive
         }
 

@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BotANick.Discord.Modules
@@ -30,20 +31,23 @@ namespace BotANick.Discord.Modules
 
             foreach (var module in _service.Modules)
             {
-                string description = null;
+                StringBuilder descriptionBld = new StringBuilder();
                 foreach (var cmd in module.Commands)
                 {
                     var result = await cmd.CheckPreconditionsAsync(Context);
                     if (result.IsSuccess)
-                        description += $"{prefix}{cmd.Aliases.First()}\n";
+                    {
+                        descriptionBld.Append($"{prefix}{cmd.Aliases.First()}");
+                        descriptionBld.AppendLine();
+                    }
                 }
 
-                if (!string.IsNullOrWhiteSpace(description))
+                if (!string.IsNullOrWhiteSpace(descriptionBld.ToString()))
                 {
                     builder.AddField(x =>
                     {
                         x.Name = module.Name;
-                        x.Value = description;
+                        x.Value = descriptionBld;
                         x.IsInline = false;
                     });
                 }
@@ -64,7 +68,6 @@ namespace BotANick.Discord.Modules
                 return;
             }
 
-            string prefix = _config["prefix"];
             var builder = new EmbedBuilder()
             {
                 Color = new Color(114, 137, 218),

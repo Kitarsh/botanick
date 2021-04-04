@@ -41,8 +41,6 @@ namespace BotANick.Discord.Services
             {
                 var result = await _commands.ExecuteAsync(context, argPos, _provider);     // Execute the command
 
-                var toto = _commands.Modules;
-
                 if (!result.IsSuccess)     // If not successful, reply with the error.
                     await Console.Out.WriteLineAsync(result.ToString());
             }

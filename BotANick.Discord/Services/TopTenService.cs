@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using BotANick.Core.Data;
 
 namespace BotANick.Discord.Services
@@ -26,16 +27,14 @@ namespace BotANick.Discord.Services
         /// <param name="Players">List of players.</param>
         static public string GenerateNumbers(List<string> Players)
         {
-            string textToClipboard = "";
+            StringBuilder bld = new StringBuilder();
             var numbers = GetRandomList();
-
             foreach (var player in Players)
             {
                 var number = PopFromList(numbers);
-                var tmpText = $"\r\n{player} ||`{number:00}`||";
-                textToClipboard += tmpText;
+                bld.Append($"\r\n{player} ||`{number:00}`||");
             }
-            return textToClipboard;
+            return bld.ToString();
         }
 
         /// <summary>
@@ -45,7 +44,6 @@ namespace BotANick.Discord.Services
         static public List<string> GetRandomThemes(IDataContext dbContext)
         {
             Random rand = new Random();
-            int nbThemes = dbContext.TopTenTheme.Count();
 
             return dbContext.TopTenTheme.AsEnumerable()
                                         .Select(ttt => ttt.Theme)

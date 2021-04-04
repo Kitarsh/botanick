@@ -19,7 +19,6 @@ namespace BotANick.Discord.Modeles
         public static void SetIdMsgDiscord(this Idee idee, ulong newIdMsgDiscord)
         {
             idee.IdMsgDiscord = newIdMsgDiscord;
-            return;
         }
 
         public static EmbedBuilder GetBuilder(this Idee idee)
