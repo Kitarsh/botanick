@@ -5,6 +5,7 @@ using BotANick.Core.Data;
 using Discord;
 using BotANick.Core.Data.Constantes;
 using Microsoft.EntityFrameworkCore;
+using BotANick.Discord.Services;
 
 namespace BotANick.Discord.Modeles
 {
@@ -31,33 +32,10 @@ namespace BotANick.Discord.Modeles
                 Description = idee.Description,
             };
 
-            builder.AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Nombre de votes";
-                f.Value = idee.NombreVotes;
-            });
-
-            builder.AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "État de l'idée";
-                f.Value = idee.EtatIdee;
-            });
-
-            builder.AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Initiateur de l'idée";
-                f.Value = idee.Createur ?? "Aucun créateur";
-            });
-
-            builder.AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Date de création de l'idée";
-                f.Value = idee.DateCreation.ToString("d");
-            });
+            builder.AddFieldWithValue("Nombre de votes", idee.NombreVotes.ToString());
+            builder.AddFieldWithValue("État de l'idée", idee.EtatIdee.ToString());
+            builder.AddFieldWithValue("Initiateur de l'idée", idee.Createur ?? "Aucun créateur");
+            builder.AddFieldWithValue("Date de création de l'idée", idee.DateCreation.ToString("d"));
 
             return builder;
         }

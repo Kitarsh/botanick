@@ -64,37 +64,19 @@ namespace BotANick.Discord.Services
             var idees = dbContext.Idee.ToEnumerable()
                                       .ToList();
 
-            // Les idées sans message Discord liés.
-            var ideesSansMsgDiscord = dbContext.Idee.ToEnumerable()
-                                                    .Where(i => i.IdMsgDiscord == null)
-                                                    .ToList();
-
             var msgsEnumerable = await boiteChannel.GetMessagesAsync(100).FlattenAsync();
             var msgs = msgsEnumerable.OrderBy(msg => msg.CreatedAt)
                                      .ToList();
 
-            var idMsgs = msgs.Select(msg => msg.Id)
-                             .ToList();
-
-            // Les idées déjà liés à des messages qui n'existent plus.
-            var ideesSansMessage = idees.Where(idee => idee.IdMsgDiscord != null && !idMsgs.Contains(idee.IdMsgDiscord.Value))
-                                        .ToList();
-
-            ideesSansMsgDiscord = ideesSansMsgDiscord.Union(ideesSansMessage)
-                                                     .ToList();
-
-            foreach (var idee in ideesSansMsgDiscord)
-            {
-                idee.SetIdMsgDiscord(await ShowIdeeInBoite(idee));
-            }
+            await AddMessagesForMissingIdee(idees, msgs);
             dbContext.SaveChanges();
 
             foreach (var idee in idees)
             {
-                var msgIdee = await boiteChannel.GetMessageAsync(idee.IdMsgDiscord.Value);
+                var msgIdee = msgs.FirstOrDefault(msg => msg.Id == idee.IdMsgDiscord);
                 UpdateNombreVoteIdee(idee, msgIdee);
                 UpdateEtatIdee(idee, msgIdee);
-                var msg = msgs.FirstOrDefault(msg => msg.Id == idee.IdMsgDiscord) as RestUserMessage;
+                var msg = msgIdee as IUserMessage;
                 if (idee.IsModified() && msg != null)
                 {
                     await msg.ModifyAsync(m =>
@@ -132,6 +114,29 @@ namespace BotANick.Discord.Services
 
             var emotes = messageIdee.Reactions.Select(r => r.Key).ToList();
             idee.SetEtatBasedOnEmotes(emotes);
+        }
+
+        /// <summary>
+        /// Ajoute les messages manquants des idées dans la boîte à idées.
+        /// </summary>
+        /// <param name="idees">La liste des idées.</param>
+        /// <param name="msgs">La liste des messages existants dans la boîte à idées.</param>
+        /// <returns></returns>
+        private static async Task AddMessagesForMissingIdee(List<Idee> idees, List<IMessage> msgs)
+        {
+            var ideesSansMsgDiscord = idees.Where(i => i.IdMsgDiscord == null)
+                                                    .ToList();
+
+            var idMsgs = msgs.Select(msg => msg.Id).ToList();
+
+            var ideesSansMessage = idees.Where(idee => idee.IdMsgDiscord != null && !idMsgs.Contains(idee.IdMsgDiscord.Value)).ToList();
+
+            ideesSansMsgDiscord = ideesSansMsgDiscord.Union(ideesSansMessage).ToList();
+
+            foreach (var idee in ideesSansMsgDiscord)
+            {
+                idee.SetIdMsgDiscord(await ShowIdeeInBoite(idee));
+            }
         }
     }
 }
