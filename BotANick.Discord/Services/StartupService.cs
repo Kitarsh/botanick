@@ -44,6 +44,7 @@ namespace BotANick.Discord.Services
 
             await _commands.AddModulesAsync(projectAssembly, _provider);     // Load commands and modules into the command service
 
+            await BoiteAIdeeService.UpdateBoiteIdees();
         }
     }
 }

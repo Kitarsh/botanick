@@ -37,6 +37,16 @@ namespace BotANick.Discord.Services
 
             return $"{eb.Title}, {eb.Description}, {eb.Color}, {eb.Author}, {string.Join(", ", fieldsStringList)}, {eb.Url}";
         }
+
+        public static void AddFieldWithValue(this EmbedBuilder builder, string name, string value)
+        {
+            builder.AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = name;
+                f.Value = value;
+            });
+        }
     }
 
     public class EmbedBuilderService
