@@ -9,23 +9,18 @@ namespace BotANick.Discord.Services
 {
     public class LoggingService
     {
-        private readonly DiscordSocketClient _discord;
-        private readonly CommandService _commands;
-
-        private string _logDirectory { get; }
-        private string _logFile => Path.Combine(_logDirectory, $"{DateTime.UtcNow.ToString("yyyy-MM-dd")}.txt");
-
         // DiscordSocketClient and CommandService are injected automatically from the IServiceProvider
         public LoggingService(DiscordSocketClient discord, CommandService commands)
         {
             _logDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
 
-            _discord = discord;
-            _commands = commands;
-
-            _discord.Log += OnLogAsync;
-            _commands.Log += OnLogAsync;
+            discord.Log += OnLogAsync;
+            commands.Log += OnLogAsync;
         }
+
+        private string _logDirectory { get; }
+
+        private string _logFile => Path.Combine(_logDirectory, $"{DateTime.UtcNow.ToString("yyyy-MM-dd")}.txt");
 
         private Task OnLogAsync(LogMessage msg)
         {

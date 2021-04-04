@@ -3,12 +3,22 @@ using System.Collections.Generic;
 using BotANick.Twitch.Interfaces;
 using BotANick.Twitch.Services;
 using BotANick.Twitch.Commands;
+using System.Text;
 
 namespace BotANick.Twitch.Commands
 {
     public static class TextCommands
     {
-        public static readonly List<string> HydrateResults = new List<string>
+        public enum EnumTextCommand
+        {
+            Help = 1,
+            Hydrate = 2,
+            Toto = 3,
+            Bonjour = 4,
+            Rig = 5,
+        };
+
+        public static List<string> HydrateResults { get; } = new List<string>
         {
             "Buvez de l'eau, c'est bon pour la santé !",
             "Allons-y tous ensemble ! Buvons un coup !",
@@ -17,15 +27,6 @@ namespace BotANick.Twitch.Commands
             "Sapristi ! Où est ma Rosana ??",
             "Eh Marcel ! Un petit jaune ?!",
             "T'étouffe pas surtout Kappa",
-        };
-
-        public enum EnumTextCommand
-        {
-            Help = 1,
-            Hydrate = 2,
-            Toto = 3,
-            Bonjour = 4,
-            Rig = 5,
         };
 
         public static void Execute(string command, IWriteService writeSrv)
@@ -105,18 +106,20 @@ namespace BotANick.Twitch.Commands
 
         private static string AddCommandBasedOnEnum(Type enumType, string preCondition = "")
         {
-            var msg = string.Empty;
+            StringBuilder bld = new StringBuilder();
             var enumArray = Enum.GetNames(enumType);
             foreach (var enumElement in enumArray)
             {
+                bld.Append(" '!");
                 if (!string.IsNullOrEmpty(preCondition))
                 {
-                    preCondition += " ";
+                    bld.Append($"{preCondition} ");
                 }
-                msg += $" '!{preCondition}{enumElement}'";
+                bld.Append(enumElement);
+                bld.Append("'");
             }
 
-            return msg;
+            return bld.ToString();
         }
     }
 }

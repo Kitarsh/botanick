@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BotANick.Twitch
 {
-    public class Program
+    public static class Program
     {
         public static IConfigurationRoot Configuration { get; set; }
 
@@ -13,7 +13,7 @@ namespace BotANick.Twitch
                               .SetBasePath(AppContext.BaseDirectory)                                                  // Specify the default location for the config file
                               .AddYamlFile("E:\\VisualStudioProjects\\DiscordBot\\BotANick.Twitch\\config-prod.yml"); // Add this (yaml encoded) file to the configuration
             Configuration = builder.Build();                                                                          // Build the configuration
-            Bot bot = new Bot();
+            _ = new Bot();
         }
     }
 }

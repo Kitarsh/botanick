@@ -13,13 +13,6 @@ namespace BotANick.Twitch.Services
     {
         public static void DoAction(OnMessageReceivedArgs e, TwitchClient client)
         {
-            //if (e.ChatMessage.Message.Contains("badword"))
-            //    client.TimeoutUser(e.ChatMessage.Channel, e.ChatMessage.Username, TimeSpan.FromMinutes(30), "Bad word! 30 minute timeout!");
-            //if (e.ChatMessage.Message.Contains("toto"))
-            //{
-            //    client.SendMessage(e.ChatMessage.Channel, "Votre langage est très évolué.");
-            //}
-
             var writeSrv = new WriteService(client, e.ChatMessage.Channel);
 
             string message = e.ChatMessage.Message;

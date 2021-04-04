@@ -2,11 +2,11 @@
 
 namespace BotANick.Core
 {
-    class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            // Method intentionally left empty. Not used as a program.
         }
     }
 }

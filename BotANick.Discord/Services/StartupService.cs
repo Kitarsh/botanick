@@ -29,21 +29,23 @@ namespace BotANick.Discord.Services
             _commands = commands;
         }
 
-        public async Task StartAsync()
+        public void Start()
         {
-            TwitchLogs.SetDiscordClient(_discord);
-            BoiteAIdeeService.SetDiscordClient(_discord);
             string discordToken = _config["tokens:discord"];     // Get the discord token from the config file
             if (string.IsNullOrWhiteSpace(discordToken))
-                throw new Exception("Please enter your bot's token into the `_configuration.json` file found in the applications root directory.");
+                throw new ArgumentException("Please enter your bot's token into the `_configuration.json` file found in the applications root directory.");
 
+            TwitchLogs.SetDiscordClient(_discord);
+            BoiteAIdeeService.SetDiscordClient(_discord);
+            _ = StartAsync(discordToken);
+        }
+
+        public async Task StartAsync(string discordToken)
+        {
+            var projectAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName.Contains("BotANick"));
             await _discord.LoginAsync(TokenType.Bot, discordToken);     // Login to discord
             await _discord.StartAsync();                                // Connect to the websocket
-
-            var projectAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName.Contains("BotANick"));
-
             await _commands.AddModulesAsync(projectAssembly, _provider);     // Load commands and modules into the command service
-
             await BoiteAIdeeService.UpdateBoiteIdees();
         }
     }

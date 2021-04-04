@@ -32,7 +32,7 @@ namespace BotANick.Core.Data
 
         public DbSet<Idee> Idee { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite("Data Source=E:\\VisualStudioProjects\\DiscordBot\\BotANick.Core\\botanick_data.db");
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseSqlite("Data Source=E:\\VisualStudioProjects\\DiscordBot\\BotANick.Core\\botanick_data.db");
     }
 }

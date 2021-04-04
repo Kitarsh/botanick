@@ -10,7 +10,7 @@ namespace BotANick.Twitch.Modules
     {
         public static void PubDiscord()
         {
-            var client = Bot.client;
+            var client = Bot.Client;
             var channel = client.GetJoinedChannel("Kitarsh");
             var msg = $"Rejoignez le Discord de la communauté : https://discord.gg/PjNqJSY9E6. Des récompenses et droits supplémentaires pour les subs !";
             client.SendMessage(channel, msg);

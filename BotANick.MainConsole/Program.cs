@@ -3,7 +3,7 @@ using srv = MainConsole.Services;
 
 namespace MainConsole
 {
-    public class Program
+    static public class Program
     {
         public static void Main(string[] args)
         {

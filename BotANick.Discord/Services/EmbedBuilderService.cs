@@ -49,7 +49,7 @@ namespace BotANick.Discord.Services
         }
     }
 
-    public class EmbedBuilderService
+    public static class EmbedBuilderService
     {
         public static EmbedBuilder GenerateBuilderForNumberDisplay(Modeles.TopTenGame topTen, string theme)
         {
