@@ -67,6 +67,20 @@ namespace BotANick.Tests.Discord
         }
 
         [Fact]
+        public void ShouldClearIdMsgDiscord()
+        {
+            const int initialIdMsgDiscord = 0;
+            ulong? expectedIdMsgDiscord = null;
+            var idee = new Idee()
+            {
+                IdMsgDiscord = initialIdMsgDiscord,
+            };
+            idee.ClearIdMsgDiscord();
+
+            idee.IdMsgDiscord.Should().Be(expectedIdMsgDiscord);
+        }
+
+        [Fact]
         public void ShouldCreateBuilderFromIdee()
         {
             var idee = new Idee();
@@ -230,6 +244,89 @@ namespace BotANick.Tests.Discord
         }
 
         [Fact]
+        public void ShouldArchiveIdee()
+        {
+            var idee = new Idee();
+            idee.IsArchived.Should().BeFalse();
+
+            idee.Archive();
+
+            idee.IsArchived.Should().BeTrue();
+        }
+
+        [Fact]
+        public void ShouldIdeeNotHasToBeArchived()
+        {
+            var ideeEnCours = new Idee()
+            {
+                EtatIdee = EtatsIdees.EnCours,
+            };
+
+            var ideeSoumis = new Idee()
+            {
+                EtatIdee = EtatsIdees.Soumise,
+            };
+
+            ideeEnCours.HasToBeArchived().Should().BeFalse();
+            ideeSoumis.HasToBeArchived().Should().BeFalse();
+        }
+
+        [Fact]
+        public void ShouldIdeeHasToBeArchived()
+        {
+            var ideeRejetee = new Idee()
+            {
+                EtatIdee = EtatsIdees.Rejetee,
+            };
+
+            var ideeFaite = new Idee()
+            {
+                EtatIdee = EtatsIdees.Faite,
+            };
+
+            ideeRejetee.HasToBeArchived().Should().BeTrue();
+            ideeFaite.HasToBeArchived().Should().BeTrue();
+        }
+
+        [Fact]
+        public void ShouldIdeeNotBeArchived()
+        {
+            var ideeEnCours = new Idee()
+            {
+                EtatIdee = EtatsIdees.EnCours,
+            };
+
+            var ideeSoumis = new Idee()
+            {
+                EtatIdee = EtatsIdees.Soumise,
+            };
+
+            ideeEnCours.UpdateArchive();
+            ideeSoumis.UpdateArchive();
+            ideeEnCours.IsArchived.Should().BeFalse();
+            ideeSoumis.IsArchived.Should().BeFalse();
+        }
+
+        [Fact]
+        public void ShouldIdeeBeArchived()
+        {
+            var ideeRejetee = new Idee()
+            {
+                EtatIdee = EtatsIdees.Rejetee,
+            };
+
+            var ideeFaite = new Idee()
+            {
+                EtatIdee = EtatsIdees.Faite,
+            };
+
+            ideeRejetee.UpdateArchive();
+            ideeFaite.UpdateArchive();
+            ideeRejetee.IsArchived.Should().BeTrue();
+            ideeFaite.IsArchived.Should().BeTrue();
+        }
+
+        [Fact]
         public void ShouldCreateIdeeFromMessage()
         {
             const string _expectedDescription = "This is the description.";
@@ -244,6 +341,30 @@ namespace BotANick.Tests.Discord
 
                 var expectedIdee = dbContext.Idee.FirstOrDefault(i => i.IdeeId == newIdee.IdeeId);
                 expectedIdee.ToStringCustom().Should().Be(expectedIdeeString);
+            }
+        }
+
+        [Fact]
+        public void ShouldGetAllIdeeNotArchivedFromBoite()
+        {
+            var boite = new BoiteAIdee();
+            Idee newIdeeNotArchived = new Idee();
+            Idee newIdeeArchived = new Idee()
+            {
+                IsArchived = true,
+            };
+
+            List<Idee> expectedIdeesList = new List<Idee> { newIdeeNotArchived };
+
+            using (var dbContext = new DataInMemoryContext())
+            {
+                dbContext.Idee.Add(newIdeeArchived);
+                dbContext.Idee.Add(newIdeeNotArchived);
+                dbContext.SaveChanges();
+
+                var ideesFromBoite = boite.GetAllIdees(dbContext).ToList();
+
+                ideesFromBoite.Should().BeEquivalentTo(expectedIdeesList);
             }
         }
     }

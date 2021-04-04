@@ -1,6 +1,8 @@
-﻿using Discord;
+﻿using BotANick.Core.Data;
+using Discord;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BotANick.Discord.Modeles
@@ -18,5 +20,10 @@ namespace BotANick.Discord.Modeles
         public readonly Emoji EmoteEtatTermine = new Emoji("🏁");
 
         public readonly Emoji EmoteEtatRejete = new Emoji("❌");
+
+        public IEnumerable<Idee> GetAllIdees(IDataContext dbContext)
+            => dbContext.Idee.AsEnumerable()
+                             .Where(i => !i.IsArchived)
+                             .AsEnumerable();
     }
 }

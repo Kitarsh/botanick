@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace BotANick.Core.Data
@@ -19,7 +20,10 @@ namespace BotANick.Core.Data
 
         public DataInMemoryContext()
                     : base(_options)
-        { }
+        {
+            TopTenTheme.RemoveRange(this.TopTenTheme.ToList());
+            Idee.RemoveRange(this.Idee.ToList());
+        }
 
         public DbSet<TopTenTheme> TopTenTheme { get; set; }
 

@@ -40,6 +40,11 @@ namespace BotANick.Core.Data
         public string Createur { get; set; }
 
         /// <summary>
+        /// Indique si l'idée est archivée.
+        /// </summary>
+        public bool IsArchived { get; set; }
+
+        /// <summary>
         /// L'identifiant du message discord de l'idée.
         /// </summary>
         public ulong? IdMsgDiscord { get; set; }

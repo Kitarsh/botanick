@@ -21,6 +21,11 @@ namespace BotANick.Discord.Modeles
             idee.IdMsgDiscord = newIdMsgDiscord;
         }
 
+        public static void ClearIdMsgDiscord(this Idee idee)
+        {
+            idee.IdMsgDiscord = null;
+        }
+
         public static EmbedBuilder GetBuilder(this Idee idee)
         {
             var ideeContext = new BoiteAIdee();
@@ -52,6 +57,11 @@ namespace BotANick.Discord.Modeles
         public static void SetEtatRejetee(this Idee idee)
         {
             idee.SetEtat(EtatsIdees.Rejetee);
+        }
+
+        public static void Archive(this Idee idee)
+        {
+            idee.IsArchived = true;
         }
 
         public static void SetEtatBasedOnEmotes(this Idee idee, List<IEmote> reactionLists)
@@ -105,9 +115,67 @@ namespace BotANick.Discord.Modeles
             return idee;
         }
 
+        public static bool HasToBeArchived(this Idee idee)
+        {
+            switch (idee.EtatIdee)
+            {
+                case EtatsIdees.EnCours:
+                case EtatsIdees.Soumise:
+                    return false;
+
+                case EtatsIdees.Rejetee:
+                case EtatsIdees.Faite:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
         public static bool CheckIsOverLimit(this DbSet<Idee> dbSet)
         {
             return dbSet.Count() > 100;
+        }
+
+        public static void UpdateIdee(this Idee idee, IMessage msgIdee)
+        {
+            if (msgIdee.Id != idee.IdMsgDiscord)
+            {
+                return;
+            }
+
+            idee.UpdateNombreVoteIdee(msgIdee);
+            idee.UpdateEtatIdee(msgIdee);
+            idee.UpdateArchive();
+        }
+
+        public static void UpdateArchive(this Idee idee)
+        {
+            if (idee.HasToBeArchived())
+            {
+                idee.Archive();
+            }
+        }
+
+        private static void UpdateNombreVoteIdee(this Idee idee, IMessage messageIdee)
+        {
+            if (idee.IdMsgDiscord == null)
+            {
+                return;
+            }
+
+            idee.SetNbVotesBasedOnEmotes(messageIdee.Reactions);
+        }
+
+        private static void UpdateEtatIdee(this Idee idee, IMessage messageIdee)
+        {
+            if (idee.IdMsgDiscord == null)
+            {
+                return;
+            }
+
+            var emotes = messageIdee.Reactions.Select(r => r.Key).ToList();
+            idee.SetEtatBasedOnEmotes(emotes);
         }
 
         private static void SetEtat(this Idee idee, EtatsIdees newEtat)
