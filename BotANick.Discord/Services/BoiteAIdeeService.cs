@@ -60,13 +60,13 @@ namespace BotANick.Discord.Services
                 await MessageService.WriteInChannel(boiteChannel, "Il y a trop d'idée dans la boîte à idée ! L'update ne fonctionne pas.");
                 return;
             }
+            await UpdateIdees(dbContext, boiteChannel);
+        }
 
-            var idees = dbContext.Idee.ToEnumerable()
-                                      .ToList();
-
-            var msgsEnumerable = await boiteChannel.GetMessagesAsync(100).FlattenAsync();
-            var msgs = msgsEnumerable.OrderBy(msg => msg.CreatedAt)
-                                     .ToList();
+        private static async Task UpdateIdees(SqlLiteContext dbContext, SocketTextChannel boiteChannel)
+        {
+            var idees = _boiteAIdee.GetAllIdees(dbContext);
+            List<IMessage> msgs = await GetAllMsgs(boiteChannel);
 
             await AddMessagesForMissingIdee(idees, msgs);
             dbContext.SaveChanges();
@@ -74,58 +74,38 @@ namespace BotANick.Discord.Services
             foreach (var idee in idees)
             {
                 var msgIdee = msgs.FirstOrDefault(msg => msg.Id == idee.IdMsgDiscord);
-                UpdateNombreVoteIdee(idee, msgIdee);
-                UpdateEtatIdee(idee, msgIdee);
-                var msg = msgIdee as IUserMessage;
-                if (idee.IsModified() && msg != null)
-                {
-                    await msg.ModifyAsync(m =>
-                    {
-                        m.Embed = idee.GetBuilder().Build();
-                    });
-                }
+                idee.UpdateIdee(msgIdee);
+                await UpdateDiscordMessage(idee, msgIdee);
             }
 
             dbContext.SaveChanges();
         }
 
-        /// <summary>
-        /// Met à jour le nombre de vote pour l'idée dans la base de données.
-        /// </summary>
-        /// <param name="idee">L'idée.</param>
-        /// <param name="messageIdee">Le message Discord de l'idée.</param>
-        /// <returns>Indique si un update est nécessaire.</returns>
-        public static void UpdateNombreVoteIdee(Idee idee, IMessage messageIdee)
+        private static async Task UpdateDiscordMessage(Idee idee, IMessage msgIdee)
         {
-            if (idee.IdMsgDiscord == null)
+            if (idee.IsArchived && msgIdee is IUserMessage msgToDelete)
             {
-                return;
+                await msgToDelete.DeleteAsync();
+                idee.ClearIdMsgDiscord();
             }
-
-            idee.SetNbVotesBasedOnEmotes(messageIdee.Reactions);
+            else if (idee.IsModified() && msgIdee is IUserMessage msgToUpdate)
+            {
+                await msgToUpdate.ModifyAsync(m => { m.Embed = idee.GetBuilder().Build(); });
+            }
         }
 
-        public static void UpdateEtatIdee(Idee idee, IMessage messageIdee)
+        private static async Task<List<IMessage>> GetAllMsgs(SocketTextChannel boiteChannel)
         {
-            if (idee.IdMsgDiscord == null)
-            {
-                return;
-            }
-
-            var emotes = messageIdee.Reactions.Select(r => r.Key).ToList();
-            idee.SetEtatBasedOnEmotes(emotes);
+            var msgsEnumerable = await boiteChannel.GetMessagesAsync(100).FlattenAsync();
+            var msgs = msgsEnumerable.OrderBy(msg => msg.CreatedAt)
+                                     .ToList();
+            return msgs;
         }
 
-        /// <summary>
-        /// Ajoute les messages manquants des idées dans la boîte à idées.
-        /// </summary>
-        /// <param name="idees">La liste des idées.</param>
-        /// <param name="msgs">La liste des messages existants dans la boîte à idées.</param>
-        /// <returns></returns>
-        private static async Task AddMessagesForMissingIdee(List<Idee> idees, List<IMessage> msgs)
+        private static async Task AddMessagesForMissingIdee(IEnumerable<Idee> idees, IEnumerable<IMessage> msgs)
         {
             var ideesSansMsgDiscord = idees.Where(i => i.IdMsgDiscord == null)
-                                                    .ToList();
+                                           .ToList();
 
             var idMsgs = msgs.Select(msg => msg.Id).ToList();
 
