@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.IO;
+using System.Reflection;
 using BotANick.Discord.Services;
 using Discord;
 using Discord.Commands;
@@ -11,11 +13,17 @@ namespace BotANick.Discord
 {
     public class Startup
     {
+        private readonly string _directoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase), "..\\..\\..\\..\\");
+
         public Startup(string[] args)
         {
+            // Getting the URI of the project.
+            var configProdYml = Path.Combine(_directoryPath, "BotANick.Discord\\config-prod.yml");
+            string configProdStr = new Uri(configProdYml).LocalPath;
+
             var builder = new ConfigurationBuilder()        // Create a new instance of the config builder
                 .SetBasePath(AppContext.BaseDirectory)      // Specify the default location for the config file
-                .AddYamlFile("E:\\VisualStudioProjects\\DiscordBot\\BotANick.Discord\\config-prod.yml");                // Add this (yaml encoded) file to the configuration
+                .AddYamlFile(configProdStr);                // Add this (yaml encoded) file to the configuration
             Configuration = builder.Build();                // Build the configuration
         }
 
