@@ -34,7 +34,7 @@ namespace BotANick.Discord.Modeles
             builder.AddFieldWithValue("Nombre de votes", idee.NombreVotes.ToString());
             builder.AddFieldWithValue("État de l'idée", idee.EtatIdee.ToString());
             builder.AddFieldWithValue("Initiateur de l'idée", idee.Createur ?? "Aucun créateur");
-            builder.AddFieldWithValue("Date de création de l'idée", idee.DateCreation.ToString("d"));
+            builder.AddFieldWithValue("Date de création de l'idée", idee.DateCreation.ToString("dd/MM/yyyy"));
 
             return builder;
         }
