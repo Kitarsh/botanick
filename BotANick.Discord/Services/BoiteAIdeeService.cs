@@ -69,12 +69,15 @@ namespace BotANick.Discord.Services
             List<IMessage> msgs = await GetAllMsgs(boiteChannel);
 
             await AddMessagesForMissingIdee(idees, msgs);
+            var gitHubService = new GitHubService();
+            await gitHubService.CreateGitHubIssuesForMissingIdees(idees);
             dbContext.SaveChanges();
 
             foreach (var idee in idees)
             {
                 var msgIdee = msgs.FirstOrDefault(msg => msg.Id == idee.IdMsgDiscord);
                 idee.UpdateIdee(msgIdee);
+                dbContext.SaveChanges();
                 await UpdateDiscordMessage(idee, msgIdee);
             }
 

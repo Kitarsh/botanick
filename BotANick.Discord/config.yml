@@ -1,3 +1,4 @@
 ﻿﻿prefix: "!"
 tokens:
     discord: <token>
+    github: <token>

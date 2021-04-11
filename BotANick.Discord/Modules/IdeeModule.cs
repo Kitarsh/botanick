@@ -22,6 +22,7 @@ namespace BotANick.Discord.Modules
         public async Task AddIdees(string descriptionIdee)
         {
             var idee = await BoiteAIdeeService.AddIdeeFromMessage(Context.Message, descriptionIdee);
+            await (new GitHubService()).AddIssueBasedOnIdee(idee);
             await ReplyAsync("", false, idee.GetBuilder().Build());
         }
 
