@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 
 namespace BotANick.Core.Data
@@ -32,11 +34,19 @@ namespace BotANick.Core.Data
 
     public class SqlLiteContext : DbContext, IDataContext
     {
+        private static readonly string _directoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase), "..\\..\\..\\..\\");
+
         public DbSet<TopTenTheme> TopTenTheme { get; set; }
 
         public DbSet<Idee> Idee { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseSqlite("Data Source=E:\\VisualStudioProjects\\DiscordBot\\BotANick.Core\\botanick_data.db");
+        {
+            // Getting the URI for database.
+            var botanickDbPath = Path.Combine(_directoryPath, "BotANick.Core\\botanick_data.db");
+            string botanickDbStr = new Uri(botanickDbPath).LocalPath;
+
+            optionsBuilder.UseSqlite($"Data Source={botanickDbStr}");
+        }
     }
 }

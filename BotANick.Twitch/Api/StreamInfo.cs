@@ -31,11 +31,11 @@ namespace BotANick.Twitch.Api
             return title;
         }
 
-        public async static Task CheckStreamStarted()
+        public async static Task<bool> CheckStreamStarted()
         {
             if (streamIsOn)
             {
-                return;
+                return false;
             }
             var streamState = await IsStreaming();
             if (streamState)
@@ -43,7 +43,9 @@ namespace BotANick.Twitch.Api
                 streamIsOn = true;
                 var streamTitle = await GetStreamTitle();
                 Modules.Pub.PubStreamStart(streamTitle);
+                return true;
             }
+            return false;
         }
     }
 }

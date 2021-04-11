@@ -11,8 +11,8 @@ namespace BotANick.Tests.Twitch
 {
     public class ClockTests
     {
-        private static readonly TimeSpan _clockTimeSpan = new TimeSpan(0, 0, 0, 0, 500);
-        private static readonly TimeSpan _timeSpanToWait = new TimeSpan(0, 0, 0, 1, 0);
+        private static readonly TimeSpan _clockTimeSpan = new TimeSpan(0, 0, 0, 0, 100);
+        private static readonly TimeSpan _timeSpanToWait = new TimeSpan(0, 0, 0, 0, 300);
         private static readonly string _clockName = "Test";
 
         [Fact]
@@ -30,6 +30,7 @@ namespace BotANick.Tests.Twitch
             clock.Execute();
 
             hasClockTicked.Should().BeTrue();
+            clock.Stop();
         }
 
         [Fact]
@@ -48,6 +49,7 @@ namespace BotANick.Tests.Twitch
             Thread.Sleep(_timeSpanToWait);
 
             hasClockTicked.Should().BeTrue();
+            clock.Stop();
         }
 
         [Fact]
@@ -85,6 +87,48 @@ namespace BotANick.Tests.Twitch
             Thread.Sleep(_timeSpanToWait);
 
             hasClockTicked.Should().BeTrue();
+            clock.Stop();
+        }
+
+        [Fact]
+        public void ShouldStopTimerAfterTimeSpan()
+        {
+            var nbOfClockTicks = 0;
+            const int expectedTicks = 1;
+            bool ClockTicking()
+            {
+                nbOfClockTicks++;
+                return true;
+            }
+
+            new Clock(ClockTicking, _clockTimeSpan, _clockName);
+
+            Thread.Sleep(_timeSpanToWait);
+            Thread.Sleep(_timeSpanToWait);
+
+            nbOfClockTicks.Should().Be(expectedTicks);
+        }
+
+        [Fact]
+        public void ShouldStopTimerAfterACondition()
+        {
+            var nbOfClockTicks = 0;
+            const int expectedTicks = 3;
+            bool ClockTicking()
+            {
+                nbOfClockTicks++;
+                return nbOfClockTicks > 2;
+            }
+
+            new Clock(ClockTicking, _clockTimeSpan, _clockName);
+
+            Thread.Sleep(_timeSpanToWait);
+            Thread.Sleep(_timeSpanToWait);
+            Thread.Sleep(_timeSpanToWait);
+            Thread.Sleep(_timeSpanToWait);
+            Thread.Sleep(_timeSpanToWait);
+
+            nbOfClockTicks.Should().Be(expectedTicks);
         }
 
         [Fact]
@@ -92,7 +136,7 @@ namespace BotANick.Tests.Twitch
         {
             static void ClockTicking()
             {
-                return;
+                // EmptyFunction
             }
 
             var clock = new Clock(ClockTicking, _clockTimeSpan, _clockName);
@@ -100,6 +144,7 @@ namespace BotANick.Tests.Twitch
             var log = clock.GetLog();
 
             log.Should().Be($"The elapsed event on {_clockName} clock was raised at {expectedTime}");
+            clock.Stop();
         }
     }
 }
