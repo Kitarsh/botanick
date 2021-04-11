@@ -23,6 +23,10 @@ namespace BotANick.Twitch.Services
 
         private readonly FctAsyncToExecute _fctAsync;
 
+        private readonly FctToExecuteAndStopClock _fctKill;
+
+        private readonly FtcAsyncToExecuteAndStopClock _fctAsyncKill;
+
         /// <summary>
         /// Le nom de l'horloge.
         /// </summary>
@@ -30,22 +34,35 @@ namespace BotANick.Twitch.Services
 
         public Clock(FctToExecute fct, TimeSpan timeSpan, string name)
         {
-            // Hook up the Elapsed event for the timer.
-            this._timer = new Timer(timeSpan.TotalMilliseconds);
             this._fct = fct;
+
+            this._timer = new Timer(timeSpan.TotalMilliseconds);
             this.Name = name;
-            _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-            _timer.Start();
+            InitClock();
         }
 
         public Clock(FctAsyncToExecute fct, TimeSpan timeSpan, string name)
         {
-            // Hook up the Elapsed event for the timer.
-            this._timer = new Timer(timeSpan.TotalMilliseconds);
             this._fctAsync = fct;
+            this._timer = new Timer(timeSpan.TotalMilliseconds);
             this.Name = name;
-            _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-            _timer.Start();
+            InitClock();
+        }
+
+        public Clock(FctToExecuteAndStopClock fct, TimeSpan timeSpan, string name)
+        {
+            this._fctKill = fct;
+            this._timer = new Timer(timeSpan.TotalMilliseconds);
+            this.Name = name;
+            InitClock();
+        }
+
+        public Clock(FtcAsyncToExecuteAndStopClock fct, TimeSpan timeSpan, string name)
+        {
+            this._fctAsyncKill = fct;
+            this._timer = new Timer(timeSpan.TotalMilliseconds);
+            this.Name = name;
+            InitClock();
         }
 
         /// <summary>
@@ -54,6 +71,10 @@ namespace BotANick.Twitch.Services
         public delegate void FctToExecute();
 
         public delegate Task FctAsyncToExecute();
+
+        public delegate bool FctToExecuteAndStopClock();
+
+        public delegate Task<bool> FtcAsyncToExecuteAndStopClock();
 
         /// <summary>
         /// Exécute directement la fonction de l'horloge.
@@ -84,6 +105,12 @@ namespace BotANick.Twitch.Services
             return $"The elapsed event on {this.Name} clock was raised at {DateTime.Now.ToString("HH:mm:ss")}";
         }
 
+        private void InitClock()
+        {
+            _timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            _timer.Start();
+        }
+
         /// <summary>
         /// Exécute la fonction stockée lorsque le timer arrive à son terme.
         /// </summary>
@@ -92,14 +119,30 @@ namespace BotANick.Twitch.Services
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             Console.WriteLine(this.GetLog());
-            if (_fct != null)
+            _fct?.Invoke();
+            _fctAsync?.Invoke();
+
+            if (_fctKill != null)
             {
-                _fct();
+                var shouldKill = _fctKill();
+                if (shouldKill)
+                {
+                    this.Stop();
+                }
             }
 
-            if (_fctAsync != null)
+            if (_fctAsyncKill != null)
             {
-                _fctAsync();
+                _ = InvokeAsyncKill();
+            }
+        }
+
+        private async Task InvokeAsyncKill()
+        {
+            var shouldKill = await _fctAsyncKill();
+            if (shouldKill)
+            {
+                this.Stop();
             }
         }
     }
