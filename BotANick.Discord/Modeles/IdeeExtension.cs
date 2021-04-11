@@ -139,7 +139,7 @@ namespace BotANick.Discord.Modeles
 
         public static void UpdateIdee(this Idee idee, IMessage msgIdee)
         {
-            if (msgIdee.Id != idee.IdMsgDiscord)
+            if (msgIdee?.Id != idee.IdMsgDiscord)
             {
                 return;
             }

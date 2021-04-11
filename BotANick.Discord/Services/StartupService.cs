@@ -37,6 +37,7 @@ namespace BotANick.Discord.Services
 
             TwitchLogs.SetDiscordClient(_discord);
             BoiteAIdeeService.SetDiscordClient(_discord);
+            GitHubService.InitConfig(_config);
             _ = StartAsync(discordToken);
         }
 
