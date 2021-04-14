@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MainConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "discord twitch"
+    }
+  }
+}
