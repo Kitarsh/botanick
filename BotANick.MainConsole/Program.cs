@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using srv = MainConsole.Services;
 
 namespace MainConsole
@@ -8,6 +9,17 @@ namespace MainConsole
         public static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            if (args.Contains("discord"))
+            {
+                srv.Discord.IsDiscordLaunched = true;
+                BotANick.Discord.Program.Main(args);
+            }
+
+            if (args.Contains("twitch"))
+            {
+                srv.Twitch.LaunchTwitch();
+            }
+
             while (1 != 0)
             {
                 var command = Console.ReadLine();
