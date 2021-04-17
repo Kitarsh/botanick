@@ -10,6 +10,7 @@ using BotANick.Core.Data;
 using Discord;
 using Discord.WebSocket;
 using System.Linq;
+using System.Reflection;
 
 namespace BotANick.Tests.Discord
 {
@@ -333,7 +334,7 @@ namespace BotANick.Tests.Discord
             const string _expectedCreatorName = "Creator's Name";
             string expectedIdeeString = $"1, Creator's Name, {DateTime.Now.Date}, This is the description., Soumise, , 0";
 
-            using (var dbContext = new DataInMemoryContext())
+            using (var dbContext = new DataInMemoryContext(MethodBase.GetCurrentMethod().Name))
             {
                 Idee newIdee = null;
                 newIdee = IdeeExtension.AddIdeeInDbContext(dbContext, _expectedDescription, _expectedCreatorName);
@@ -356,7 +357,7 @@ namespace BotANick.Tests.Discord
 
             List<Idee> expectedIdeesList = new List<Idee> { newIdeeNotArchived };
 
-            using (var dbContext = new DataInMemoryContext())
+            using (var dbContext = new DataInMemoryContext(MethodBase.GetCurrentMethod().Name))
             {
                 dbContext.Idee.Add(newIdeeArchived);
                 dbContext.Idee.Add(newIdeeNotArchived);
