@@ -16,20 +16,16 @@ namespace BotANick.Core.Data
 
     public class DataInMemoryContext : DbContext, IDataContext
     {
-        private static DbContextOptions _options = new DbContextOptionsBuilder<DataInMemoryContext>()
-                                               .UseInMemoryDatabase(databaseName: "Test")
-                                               .Options;
-
-        public DataInMemoryContext()
-                    : base(_options)
-        {
-            TopTenTheme.RemoveRange(this.TopTenTheme.ToList());
-            Idee.RemoveRange(this.Idee.ToList());
-        }
+        public DataInMemoryContext(string dbName)
+                    : base(GetOptions(dbName))
+        { }
 
         public DbSet<TopTenTheme> TopTenTheme { get; set; }
 
         public DbSet<Idee> Idee { get; set; }
+
+        private static DbContextOptions GetOptions(string dbName)
+                        => new DbContextOptionsBuilder<DataInMemoryContext>().UseInMemoryDatabase(databaseName: dbName).Options;
     }
 
     public class SqlLiteContext : DbContext, IDataContext

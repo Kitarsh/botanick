@@ -6,6 +6,7 @@ using FluentAssertions;
 using Xunit;
 using srv = BotANick.Discord.Services;
 using mod = BotANick.Discord.Modeles;
+using System.Reflection;
 
 namespace BotANick.Tests.Discord
 {
@@ -401,7 +402,7 @@ namespace BotANick.Tests.Discord
         [Fact]
         public void ShouldCreateThemeFromDataBase()
         {
-            using (var context = new DataInMemoryContext())
+            using (var context = new DataInMemoryContext(MethodBase.GetCurrentMethod().Name))
             {
                 var expectedTheme = new TopTenTheme
                 {
@@ -420,10 +421,9 @@ namespace BotANick.Tests.Discord
         [Fact]
         public void ShouldGetThemeFromDataBase()
         {
-            using (var context = new DataInMemoryContext())
+            using (var context = new DataInMemoryContext(MethodBase.GetCurrentMethod().Name))
             {
                 context.TopTenTheme.RemoveRange(context.TopTenTheme);
-                var topTenGame = new mod.TopTenGame();
 
                 var arrayOfThemes = GetArrayOfThemes();
                 var arrayOfTopTenTheme = arrayOfThemes.Select(t => new TopTenTheme { Theme = t })
@@ -448,15 +448,6 @@ namespace BotANick.Tests.Discord
             foreach (string player in players)
             {
                 topTenGame.RegisterUser(player);
-            }
-        }
-
-        private static void Add5ThemesToGame(mod.TopTenGame topTenGame)
-        {
-            var themes = GetArrayOfThemes();
-            foreach (string theme in themes)
-            {
-                topTenGame.RegisterTheme(theme);
             }
         }
 

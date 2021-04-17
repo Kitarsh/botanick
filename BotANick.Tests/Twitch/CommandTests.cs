@@ -21,6 +21,15 @@ namespace BotANick.Tests.Twitch
         }
 
         [Fact]
+        public void ShouldGetNothingFromTextCommandsIfWrongCommand()
+        {
+            const int expectedEnumValue = 0;
+            const string textCommandStr = "notACommand";
+            var textCommand = TextCommands.GetTextCommands(textCommandStr);
+            textCommand.Should().Be(expectedEnumValue);
+        }
+
+        [Fact]
         public void ShouldGetDiscordCommands()
         {
             const string discordCommandStr = "discord pub";
@@ -48,10 +57,20 @@ namespace BotANick.Tests.Twitch
         }
 
         [Fact]
+        public void ShouldExecuteFalseCommandDoNothing()
+        {
+            var writeSrv = new TestWriteService();
+            const string command = "notACommand";
+            TextCommands.Execute(command, writeSrv);
+
+            writeSrv.WrittenChat.Should().BeNull();
+        }
+
+        [Fact]
         public void ShouldHelpCommandWriteSpecificMsg()
         {
             var writeSrv = new TestWriteService();
-            const string expectedMessageToWrite = "Liste des commandes : '!Help' '!Hydrate' '!Toto' '!Bonjour' '!Rig' '!Discord Pub'";
+            const string expectedMessageToWrite = "Liste des commandes : '!Help' '!Hydrate' '!Toto' '!Bonjour' '!Rig' '!Indelivrables' '!Discord Pub'";
             const string command = "help";
             TextCommands.Execute(command, writeSrv);
 
@@ -98,6 +117,18 @@ namespace BotANick.Tests.Twitch
             var writeSrv = new TestWriteService();
             const string expectedMessageToWrite = "Il a 4 écrans et il ne parle que de ça...";
             const string command = "rig";
+
+            TextCommands.Execute(command, writeSrv);
+
+            writeSrv.WrittenChat.Should().Be(expectedMessageToWrite);
+        }
+
+        [Fact]
+        public void ShouldIndelivrablesCommandWriteSpecificMsg()
+        {
+            var writeSrv = new TestWriteService();
+            const string expectedMessageToWrite = "Allez tous regarder la chaîne YouTube des Indélivrables : https://www.youtube.com/channel/UCl7djHZZcnOt-t05QMYx90g";
+            const string command = "indelivrables";
 
             TextCommands.Execute(command, writeSrv);
 
