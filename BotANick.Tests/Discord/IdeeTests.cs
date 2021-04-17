@@ -358,6 +358,7 @@ namespace BotANick.Tests.Discord
 
             using (var dbContext = new DataInMemoryContext())
             {
+                dbContext.Idee.RemoveRange(dbContext.Idee.ToList());
                 dbContext.Idee.Add(newIdeeArchived);
                 dbContext.Idee.Add(newIdeeNotArchived);
                 dbContext.SaveChanges();
