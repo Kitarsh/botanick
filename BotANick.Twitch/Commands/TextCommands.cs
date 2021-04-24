@@ -34,32 +34,13 @@ namespace BotANick.Twitch.Commands
         {
             switch (GetTextCommands(command))
             {
-                case EnumTextCommand.Help:
-                    Help(writeSrv);
-                    break;
-
-                case EnumTextCommand.Hydrate:
-                    Hydrate(writeSrv);
-                    break;
-
-                case EnumTextCommand.Toto:
-                    Toto(writeSrv);
-                    break;
-
-                case EnumTextCommand.Bonjour:
-                    Bonjour(writeSrv);
-                    break;
-
-                case EnumTextCommand.Rig:
-                    Rig(writeSrv);
-                    break;
-
-                case EnumTextCommand.Indelivrables:
-                    Indelivrables(writeSrv);
-                    break;
-
-                default:
-                    break;
+                case EnumTextCommand.Help: Help(writeSrv); break;
+                case EnumTextCommand.Hydrate: Hydrate(writeSrv); break;
+                case EnumTextCommand.Toto: Toto(writeSrv); break;
+                case EnumTextCommand.Bonjour: Bonjour(writeSrv); break;
+                case EnumTextCommand.Rig: Rig(writeSrv); break;
+                case EnumTextCommand.Indelivrables: Indelivrables(writeSrv); break;
+                default: break;
             }
         }
 

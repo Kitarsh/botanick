@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BotANick.Twitch.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TwitchLib.Client;
@@ -8,12 +9,13 @@ namespace BotANick.Twitch.Modules
 {
     public static class Pub
     {
+        public static string MsgPubDiscord => "Rejoignez le Discord de la communauté : https://discord.gg/PjNqJSY9E6. Des récompenses et droits supplémentaires pour les subs !";
+
         public static void PubDiscord()
         {
             var client = Bot.Client;
             var channel = client.GetJoinedChannel("Kitarsh");
-            var msg = $"Rejoignez le Discord de la communauté : https://discord.gg/PjNqJSY9E6. Des récompenses et droits supplémentaires pour les subs !";
-            client.SendMessage(channel, msg);
+            client.SendMessage(channel, MsgPubDiscord);
         }
 
         public static void PubStreamStart(string titleStream)
