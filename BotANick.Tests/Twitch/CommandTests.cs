@@ -30,12 +30,34 @@ namespace BotANick.Tests.Twitch
         }
 
         [Fact]
-        public void ShouldGetDiscordCommands()
+        public void ShouldGetDiscordPubCommands()
         {
             const string discordCommandStr = "discord pub";
             var discordCommand = DiscordCommands.GetDiscordCommands(discordCommandStr);
 
             discordCommand.Should().Be(DiscordCommands.EnumDiscordCommand.Pub);
+        }
+
+        [Fact]
+        public void ShouldDiscordCommandReturnNothing()
+        {
+            const string discordCommandStr = "discord";
+            var writeSrv = new TestWriteService();
+            DiscordCommands.Execute(discordCommandStr, writeSrv);
+
+            writeSrv.WrittenChat.Should().BeNull();
+        }
+
+        [Fact]
+        public void ShouldDiscordPubCommandReturnPub()
+        {
+            const string discordCommandStr = "discord pub";
+            const string expectedMsgToWrite = "Rejoignez le Discord de la communauté : https://discord.gg/PjNqJSY9E6. Des récompenses et droits supplémentaires pour les subs !";
+            var writeSrv = new TestWriteService();
+
+            DiscordCommands.Execute(discordCommandStr, writeSrv);
+
+            writeSrv.WrittenChat.Should().Be(expectedMsgToWrite);
         }
 
         [Fact]
@@ -45,6 +67,15 @@ namespace BotANick.Tests.Twitch
             var command = CommandService.GetCommand(text);
 
             command.Should().Be("command");
+        }
+
+        [Fact]
+        public void ShouldTransformOnlyCommand()
+        {
+            const string text = "notAcommand";
+            var command = CommandService.GetCommand(text);
+
+            command.Should().BeNull();
         }
 
         [Fact]

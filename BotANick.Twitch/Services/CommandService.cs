@@ -23,7 +23,7 @@ namespace BotANick.Twitch.Services
                 return;
             }
 
-            DiscordCommands.Execute(command);
+            DiscordCommands.Execute(command, writeSrv);
             TextCommands.Execute(command, writeSrv);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using BotANick.Twitch.Interfaces;
 using BotANick.Twitch.Modules;
 
 namespace BotANick.Twitch.Commands
@@ -12,22 +13,18 @@ namespace BotANick.Twitch.Commands
             Pub = 1,
         };
 
-        public static void Execute(string command)
+        public static void Execute(string command, IWriteService writeSrv)
         {
             switch (GetDiscordCommands(command))
             {
-                case EnumDiscordCommand.Pub:
-                    Pub.PubDiscord();
-                    return;
-
-                default:
-                    break;
+                case EnumDiscordCommand.Pub: Pub(writeSrv); break;
+                default: break;
             }
         }
 
         public static EnumDiscordCommand GetDiscordCommands(string command)
         {
-            if (!command.StartsWith("discord"))
+            if (!command.StartsWith("discord") || command.Length < 8)
             {
                 return 0;
             }
@@ -43,6 +40,12 @@ namespace BotANick.Twitch.Commands
             }
 
             return 0;
+        }
+
+        private static void Pub(IWriteService writeSrv)
+        {
+            string msg = Modules.Pub.MsgPubDiscord;
+            writeSrv.WriteInChat(msg);
         }
     }
 }
