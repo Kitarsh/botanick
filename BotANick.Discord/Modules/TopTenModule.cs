@@ -7,6 +7,7 @@ using BotANick.Discord.Services;
 using System;
 using BotANick.Discord.Modeles;
 using BotANick.Core.Data;
+using Discord.WebSocket;
 
 namespace BotANick.Discord.Modules
 {
@@ -93,6 +94,27 @@ namespace BotANick.Discord.Modules
             await ReplyAsync("", false, builder.Build());
         }
 
+        private async Task<List<string>> GetNicknamesFromUser(IReadOnlyCollection<IUser> registeredUsers)
+        {
+            var allPlayers = registeredUsers.Where(ui => !ui.IsBot).ToList();
+            var allNicknamesTask = allPlayers.Select(iu => GetNickname(iu));
+            return (await Task.WhenAll(allNicknamesTask)).ToList();
+        }
+
+        private async Task<string> GetNickname(IUser iu)
+        {
+            var user = await Context.Channel.GetUserAsync(iu.Id, CacheMode.AllowDownload);
+
+            if (user is SocketGuildUser userSocket && !string.IsNullOrEmpty(userSocket.Nickname))
+            {
+                return userSocket.Nickname;
+            }
+            else
+            {
+                return iu.Username;
+            }
+        }
+
         /// <summary>
         /// Met à jour la liste des joueurs et le CapTen.
         /// </summary>
@@ -103,9 +125,8 @@ namespace BotANick.Discord.Modules
             {
                 var registerMsg = await Context.Channel.GetMessageAsync(_topten.RegisterMsgId);
                 var registeredUsers = await registerMsg.GetReactionUsersAsync(_topten.RegisterEmoteChar, 11).FirstOrDefaultAsync();
-                _topten.RegisterUser(registeredUsers.Where(u => !u.IsBot)
-                                                    .Select(u => u.Username)
-                                                    .ToList());
+                List<string> nicknames = await GetNicknamesFromUser(registeredUsers);
+                _topten.RegisterUser(nicknames);
             }
 
             _topten.NextCapten();
