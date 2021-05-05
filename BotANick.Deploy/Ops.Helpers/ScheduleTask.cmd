@@ -1,0 +1,1 @@
+schtasks /create /tn "BotANick.Core.SaveBackUp" /sc hourly /mo 4 /tr "D:\BotANick.BackUp\CopyDbFromDocker.cmd"

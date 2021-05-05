@@ -1,0 +1,25 @@
+name: Docker
+on:
+  push:
+    branches:
+      - master
+jobs:
+  push_to_registry:
+    name: Generate Docker Image
+    runs-on: [self-hosted, dockerbuild]
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Publish
+        run: dotnet publish -c Release --no-restore
+      - name: Copy database and config to repo
+        shell: powershell
+        run: |
+          $repositoryPath = (Get-Location).Path
+          powershell D:\actions-runner\Helpers\CopyDbAndConfig.ps1 $repositoryPath
+          docker build --pull --rm -f "Dockerfile" -t botanick:latest ".
+          powershell D:\actions-runner\Helpers\UpdateContainer.ps1
