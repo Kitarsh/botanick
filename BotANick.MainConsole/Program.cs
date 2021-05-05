@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using srv = MainConsole.Services;
 
 namespace MainConsole
 {
     static public class Program
     {
+        static ManualResetEvent _quitEvent = new ManualResetEvent(false);
+
         public static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
             if (args.Contains("discord"))
             {
-                srv.Discord.IsDiscordLaunched = true;
                 BotANick.Discord.Program.Main(args);
             }
 
@@ -20,32 +22,7 @@ namespace MainConsole
                 srv.Twitch.LaunchTwitch();
             }
 
-            while (1 != 0)
-            {
-                var command = Console.ReadLine();
-                switch (command)
-                {
-                    case "Discord":
-                        if (!srv.Discord.IsDiscordLaunched)
-                        {
-                            srv.Discord.IsDiscordLaunched = true;
-                            BotANick.Discord.Program.Main(args);
-                        }
-                        break;
-
-                    case "Twitch":
-                        srv.Twitch.LaunchTwitch();
-                        break;
-
-                    case "Stream":
-                        _ = BotANick.Twitch.Api.StreamInfo.IsStreaming();
-                        break;
-
-                    default:
-                        Console.WriteLine($"{command} n'est pas une commande");
-                        break;
-                }
-            }
+            _quitEvent.WaitOne();
         }
     }
 }
