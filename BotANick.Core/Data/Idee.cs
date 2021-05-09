@@ -20,6 +20,11 @@ namespace BotANick.Core.Data
         public string Description { get; set; }
 
         /// <summary>
+        /// Un commentaire supplémentaire de l'idée.
+        /// </summary>
+        public string Commentaire { get; set; }
+
+        /// <summary>
         /// La date de création de l'idée.
         /// </summary>
         public DateTime DateCreation { get; set; }

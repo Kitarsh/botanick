@@ -17,6 +17,7 @@ namespace BotANick.Twitch.Commands
             Bonjour = 4,
             Rig = 5,
             Indelivrables = 6,
+            GiveUp = 7,
         };
 
         public static List<string> HydrateResults { get; } = new List<string>
@@ -40,6 +41,7 @@ namespace BotANick.Twitch.Commands
                 case EnumTextCommand.Bonjour: Bonjour(writeSrv); break;
                 case EnumTextCommand.Rig: Rig(writeSrv); break;
                 case EnumTextCommand.Indelivrables: Indelivrables(writeSrv); break;
+                case EnumTextCommand.GiveUp: GiveUp(writeSrv); break;
                 default: break;
             }
         }
@@ -93,6 +95,11 @@ namespace BotANick.Twitch.Commands
         private static void Indelivrables(IWriteService writeSrv)
         {
             writeSrv.WriteInChat("Allez tous regarder la chaîne YouTube des Indélivrables : https://www.youtube.com/channel/UCl7djHZZcnOt-t05QMYx90g");
+        }
+
+        private static void GiveUp(IWriteService writeSrv)
+        {
+            writeSrv.WriteInChat("https://www.youtube.com/watch?v=dQw4w9WgXcQ LUL");
         }
 
         private static string AddCommandBasedOnEnum(Type enumType, string preCondition = "")
