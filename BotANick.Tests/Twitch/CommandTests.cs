@@ -101,7 +101,7 @@ namespace BotANick.Tests.Twitch
         public void ShouldHelpCommandWriteSpecificMsg()
         {
             var writeSrv = new TestWriteService();
-            const string expectedMessageToWrite = "Liste des commandes : '!Help' '!Hydrate' '!Toto' '!Bonjour' '!Rig' '!Indelivrables' '!Discord Pub'";
+            const string expectedMessageToWrite = "Liste des commandes : '!Help' '!Hydrate' '!Toto' '!Bonjour' '!Rig' '!Indelivrables' '!GiveUp' '!Discord Pub'";
             const string command = "help";
             TextCommands.Execute(command, writeSrv);
 
@@ -160,6 +160,18 @@ namespace BotANick.Tests.Twitch
             var writeSrv = new TestWriteService();
             const string expectedMessageToWrite = "Allez tous regarder la chaîne YouTube des Indélivrables : https://www.youtube.com/channel/UCl7djHZZcnOt-t05QMYx90g";
             const string command = "indelivrables";
+
+            TextCommands.Execute(command, writeSrv);
+
+            writeSrv.WrittenChat.Should().Be(expectedMessageToWrite);
+        }
+
+        [Fact]
+        public void ShouldGiveUpCommandWriteSpecificMsg()
+        {
+            var writeSrv = new TestWriteService();
+            const string expectedMessageToWrite = "https://www.youtube.com/watch?v=dQw4w9WgXcQ LUL";
+            const string command = "giveup";
 
             TextCommands.Execute(command, writeSrv);
 

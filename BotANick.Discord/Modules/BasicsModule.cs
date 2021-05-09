@@ -57,7 +57,12 @@ namespace BotANick.Discord.Modules
             await messageToReact.AddReactionAsync(new Emoji("🇯"));
         }
 
+        [Command("giveup")]
+        public Task GiveUp()
+            => ReplyAsync("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+
         [Command("indelivrables"), Alias(new string[] { "livre", "livres", "indelivrable", "indelivre" })]
+
         public Task PubIndelivrables()
             => ReplyAsync("Allez tous regarder la chaîne YouTube des Indélivrables : https://www.youtube.com/channel/UCl7djHZZcnOt-t05QMYx90g");
     }
