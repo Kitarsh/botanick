@@ -17,7 +17,7 @@ namespace BotANick.Discord
         {
             var builder = new ConfigurationBuilder()        // Create a new instance of the config builder
                 .SetBasePath(AppContext.BaseDirectory)      // Specify the default location for the config file
-                .AddYamlFile("BotANick.Discord/config-prod.yml");                // Add this (yaml encoded) file to the configuration
+                .AddYamlFile("discord-config-prod.yml");    // Add this (yaml encoded) file to the configuration
             Configuration = builder.Build();                // Build the configuration
         }
 

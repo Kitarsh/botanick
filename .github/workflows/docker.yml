@@ -7,19 +7,18 @@ jobs:
   push_to_registry:
     name: Generate Docker Image
     runs-on: [self-hosted, dockerbuild]
-    permissions:
-      contents: read
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
-      - name: Restore dependencies
-        run: dotnet restore
       - name: Publish
-        run: dotnet publish -c Release --no-restore
+        run: dotnet publish -c Release
       - name: Copy database and config to repo
         shell: powershell
         run: |
           $repositoryPath = (Get-Location).Path
-          powershell D:\actions-runner\Helpers\CopyDbAndConfig.ps1 $repositoryPath
-          docker build --pull --rm -f "Dockerfile" -t botanick:latest
-          powershell D:\actions-runner\Helpers\UpdateContainer.ps1
+          powershell .\BotANick.Deploy\GitHubRunner.Helpers\CopyDbAndConfig.ps1 $repositoryPath
+          powershell .\BotANick.Deploy\GitHubRunner.Helpers\MigrateDatabase.ps1 $repositoryPath
+      - name: Build docker image
+        run: docker build --pull --rm -f "Dockerfile" -t botanick:latest .
+      - name: Deploy image to container
+        run: powershell .\BotANick.Deploy\GitHubRunner.Helpers\UpdateContainer.ps1
