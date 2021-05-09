@@ -13,7 +13,7 @@ namespace BotANick.Twitch
         {
             var builder = new ConfigurationBuilder()                    // Create a new instance of the config builder
                               .SetBasePath(AppContext.BaseDirectory)    // Specify the default location for the config file
-                              .AddYamlFile("BotANick.Twitch/config-prod.yml");              // Add this (yaml encoded) file to the configuration
+                              .AddYamlFile("twitch-config-prod.yml");   // Add this (yaml encoded) file to the configuration
             Configuration = builder.Build();                            // Build the configuration
             _ = new Bot();
         }

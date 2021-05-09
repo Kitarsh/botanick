@@ -20,6 +20,7 @@ jobs:
         shell: powershell
         run: |
           $repositoryPath = (Get-Location).Path
-          powershell D:\actions-runner\Helpers\CopyDbAndConfig.ps1 $repositoryPath
+          powershell .\BotANick.Deploy\GitHubRunner.Helpers\CopyDbAndConfig.ps1 $repositoryPath
+          powershell .\BotANick.Deploy\GitHubRunner.Helpers\MigrateDatabase.ps1 $repositoryPath
           docker build --pull --rm -f "Dockerfile" -t botanick:latest
-          powershell D:\actions-runner\Helpers\UpdateContainer.ps1
+          powershell .\BotANick.Deploy\GitHubRunner.Helpers\UpdateContainer.ps1

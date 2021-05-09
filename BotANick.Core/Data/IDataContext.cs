@@ -36,7 +36,7 @@ namespace BotANick.Core.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=BotANick.Core/botanick_data.db");
+            optionsBuilder.UseSqlite("Data Source=botanick_data.db");
         }
     }
 }
