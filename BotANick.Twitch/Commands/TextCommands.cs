@@ -4,11 +4,14 @@ using BotANick.Twitch.Interfaces;
 using BotANick.Twitch.Services;
 using BotANick.Twitch.Commands;
 using System.Text;
+using System.Globalization;
 
 namespace BotANick.Twitch.Commands
 {
     public static class TextCommands
     {
+        private static DateTime? _lastHydrate = null;
+
         public enum EnumTextCommand
         {
             Help = 1,
@@ -18,6 +21,7 @@ namespace BotANick.Twitch.Commands
             Rig = 5,
             Indelivrables = 6,
             GiveUp = 7,
+            TimeHydrate = 8,
         };
 
         public static List<string> HydrateResults { get; } = new List<string>
@@ -42,6 +46,7 @@ namespace BotANick.Twitch.Commands
                 case EnumTextCommand.Rig: Rig(writeSrv); break;
                 case EnumTextCommand.Indelivrables: Indelivrables(writeSrv); break;
                 case EnumTextCommand.GiveUp: GiveUp(writeSrv); break;
+                case EnumTextCommand.TimeHydrate: HydrateTime(writeSrv); break;
                 default: break;
             }
         }
@@ -58,6 +63,25 @@ namespace BotANick.Twitch.Commands
             }
 
             return 0;
+        }
+
+        private static void HydrateTime(IWriteService writeSrv)
+        {
+            if (_lastHydrate == null)
+            {
+                writeSrv.WriteInChat("Il n'a jamais bu Kappa");
+                return;
+            }
+
+            writeSrv.WriteInChat($"Il a bu pour la dernière fois, il y a {GetDiffMinutesLastTimeHydrate().ToString(new CultureInfo("en-US"))} minute(s).");
+        }
+
+        private static decimal GetDiffMinutesLastTimeHydrate()
+        {
+            var now = DateTime.Now;
+            var diffDates = now - _lastHydrate.Value;
+            var diffMinutes = Math.Round(diffDates.TotalMinutes, 3);
+            return Convert.ToDecimal(diffMinutes);
         }
 
         private static void Rig(IWriteService writeSrv)
@@ -89,6 +113,7 @@ namespace BotANick.Twitch.Commands
             var rng = new Random();
 
             var pickedIndex = rng.Next(0, HydrateResults.Count - 1);
+            _lastHydrate = DateTime.Now;
             writeSrv.WriteInChat(HydrateResults[pickedIndex]);
         }
 

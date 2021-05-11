@@ -6,6 +6,7 @@ using Xunit;
 using BotANick.Twitch.Services;
 using BotANick.Twitch.Commands;
 using BotANick.Twitch.Interfaces;
+using System.Threading;
 
 namespace BotANick.Tests.Twitch
 {
@@ -101,7 +102,7 @@ namespace BotANick.Tests.Twitch
         public void ShouldHelpCommandWriteSpecificMsg()
         {
             var writeSrv = new TestWriteService();
-            const string expectedMessageToWrite = "Liste des commandes : '!Help' '!Hydrate' '!Toto' '!Bonjour' '!Rig' '!Indelivrables' '!GiveUp' '!Discord Pub'";
+            const string expectedMessageToWrite = "Liste des commandes : '!Help' '!Hydrate' '!Toto' '!Bonjour' '!Rig' '!Indelivrables' '!GiveUp' '!TimeHydrate' '!Discord Pub'";
             const string command = "help";
             TextCommands.Execute(command, writeSrv);
 
@@ -117,17 +118,6 @@ namespace BotANick.Tests.Twitch
             TextCommands.Execute(command, writeSrv);
 
             writeSrv.WrittenChat.Should().Be(expectedMessageToWrite);
-        }
-
-        [Fact]
-        public void ShouldHydrateCommandWriteRandomMsg()
-        {
-            var writeSrv = new TestWriteService();
-            const string command = "hydrate";
-
-            TextCommands.Execute(command, writeSrv);
-
-            writeSrv.WrittenChat.Should().BeOneOf(TextCommands.HydrateResults);
         }
 
         [Fact]
@@ -176,6 +166,34 @@ namespace BotANick.Tests.Twitch
             TextCommands.Execute(command, writeSrv);
 
             writeSrv.WrittenChat.Should().Be(expectedMessageToWrite);
+        }
+
+        [Fact]
+        public void ShouldHydrateAndTimeHydrateReturnInformations()
+        {
+            var writeSrv = new TestWriteService();
+            const string expectedMessageToWrite = "Il n'a jamais bu Kappa";
+            const string command = "timehydrate";
+
+            TextCommands.Execute(command, writeSrv);
+            writeSrv.WrittenChat.Should().Be(expectedMessageToWrite);
+
+            var writeSrv0 = new TestWriteService();
+            const string command0 = "hydrate";
+
+            TextCommands.Execute(command0, writeSrv0);
+
+            writeSrv0.WrittenChat.Should().BeOneOf(TextCommands.HydrateResults);
+
+            Thread.Sleep(300);
+
+            writeSrv = new TestWriteService();
+            const string expectedMessageToWrite2 = "Il a bu pour la dernière fois, il y a 0.005 minute(s).";
+            const string command2 = "timehydrate";
+
+            TextCommands.Execute(command2, writeSrv);
+
+            writeSrv.WrittenChat.Should().Be(expectedMessageToWrite2);
         }
 
         private class TestWriteService : IWriteService
