@@ -11,7 +11,7 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
       - name: Publish
-        run: dotnet publish -c Release
+        run: dotnet publish -c Release -r linux-arm
       - name: Copy database and config to repo
         shell: powershell
         run: |
@@ -19,6 +19,6 @@ jobs:
           powershell .\BotANick.Deploy\GitHubRunner.Helpers\CopyDbAndConfig.ps1 $repositoryPath
           powershell .\BotANick.Deploy\GitHubRunner.Helpers\MigrateDatabase.ps1 $repositoryPath
       - name: Build docker image
-        run: docker build --pull --rm -f "Dockerfile" -t botanick:latest .
+        run: docker buildx build --platform linux/arm/v7 --pull --rm -f "Dockerfile" -t botanick:latest .
       - name: Deploy image to container
         run: powershell .\BotANick.Deploy\GitHubRunner.Helpers\UpdateContainer.ps1
