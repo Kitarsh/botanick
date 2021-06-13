@@ -1,0 +1,19 @@
+name: BackUpDataBase
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  push:
+    branches:
+      - master
+jobs:
+  backUpDataBase:
+    runs-on: [self-hosted, dockercontainer]
+    steps:
+      - name: "Get database from container"
+        run: |
+          docker cp botanickContainer:/App/botanick_data.db /home/pi/Documents/botanick
+      - name: "Push database to GitHub artifacts"
+        uses: actions/upload-artifact@v2
+        with:
+          name: "Botanick.Data"
+          path: "/home/pi/Documents/botanick/botanick_data.db"
