@@ -1,9 +1,0 @@
-﻿﻿tokens:
-    oauth: <token>
-
-tokens:
-    oauth: <token>
-    Api:
-        ClientId: <client_id>
-        Secret: <client_secret>
-        AccessToken: <access_token>
