@@ -343,5 +343,5 @@ healthchecksdb
 # Customs - Project Specific ignore
 botanick_data.db*
 Migrations/
-/BotANick.Discord/config-prod.yml
-/BotANick.Twitch/config-prod.yml
+/BotANick.Discord/*prod.yml
+/BotANick.Twitch/*prod.yml

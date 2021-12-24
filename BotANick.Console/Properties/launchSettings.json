@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BotANick.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "discord"
+    }
+  }
+}

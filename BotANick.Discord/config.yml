@@ -1,0 +1,7 @@
+﻿﻿prefix: "!"
+tokens:
+    discord: <token>
+guildsId:
+    panini: <id>
+commands:
+    panini: <linkInvite>
