@@ -19,7 +19,7 @@ public class PaniniService
 
         commands = new Dictionary<ICommand, Func<SocketSlashCommand, Task>>()
         {
-            {PaniniCommandModel.PaniniServerPub(), PaniniCmd },
+            {PaniniCommandModel.PaniniServerPub(), PaniniServerPubCmd },
         };
 
         Register();
@@ -27,7 +27,7 @@ public class PaniniService
         discord.SlashCommandExecuted += PaniniSlhCmdHandler;
     }
 
-    private async Task PaniniCmd(SocketSlashCommand cmd)
+    private async Task PaniniServerPubCmd(SocketSlashCommand cmd)
     {
         await cmd.RespondAsync(_config["commands:panini"]);
     }

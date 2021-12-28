@@ -20,12 +20,17 @@ public class GlobalService
         commands = new Dictionary<ICommand, Func<SocketSlashCommand, Task>>()
         {
             {GlobalCommandModel.Hug(), HugCmd },
+            {GlobalCommandModel.Noraj(), Noraj },
+            {GlobalCommandModel.GiveUp(), GiveUpCmd },
+            {GlobalCommandModel.Indelivrables(), IndelivrablesCmd },
         };
 
         Register();
 
         discord.SlashCommandExecuted += GlobalSlhCmdHandler;
     }
+
+    #region Commands
 
     private async Task HugCmd(SocketSlashCommand cmd)
     {
@@ -42,6 +47,39 @@ public class GlobalService
                           .FirstOrDefault();
         await cmd.RespondAsync(emoji);
     }
+
+    private async Task GiveUpCmd(SocketSlashCommand cmd)
+    {
+        await cmd.RespondAsync("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+    }
+
+    private async Task Noraj(SocketSlashCommand cmd)
+    {
+        await cmd.DeferAsync(true);
+        var msgsEnumerable = await cmd.Channel.GetMessagesAsync(1, CacheMode.AllowDownload)
+                                              .FlattenAsync();
+        var msgs = msgsEnumerable.OrderByDescending(msg => msg.CreatedAt)
+                                 .ToList();
+
+        var messageToReact = msgs[0]; // Reacts to the message before the command.
+
+        await messageToReact.AddReactionAsync(new Emoji("🇳"));
+        await messageToReact.AddReactionAsync(new Emoji("🇴"));
+        await messageToReact.AddReactionAsync(new Emoji("🇷"));
+        await messageToReact.AddReactionAsync(new Emoji("🇦"));
+        await messageToReact.AddReactionAsync(new Emoji("🇯"));
+
+        await cmd.FollowupAsync("Done !", ephemeral: true);
+    }
+
+    private async Task IndelivrablesCmd(SocketSlashCommand cmd)
+    {
+        await cmd.RespondAsync("Allez tous regarder la chaîne YouTube des Indélivrables : https://www.youtube.com/channel/UCl7djHZZcnOt-t05QMYx90g");
+    }
+
+    #endregion Commands
+
+    #region InternalServices
 
     private void Register()
     {
@@ -68,4 +106,6 @@ public class GlobalService
 
         await cmd.Value.Invoke(command);
     }
+
+    #endregion InternalServices
 }

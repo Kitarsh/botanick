@@ -5,7 +5,14 @@ VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotANick.Console", "BotANick.Console\BotANick.Console.csproj", "{D2BFCD30-A1F8-4D5F-AC4C-5F9B67A7FF73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotANick.Discord", "BotANick.Discord\BotANick.Discord.csproj", "{DF694B81-945B-4D9A-8E76-E679A954C9E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotANick.Discord", "BotANick.Discord\BotANick.Discord.csproj", "{DF694B81-945B-4D9A-8E76-E679A954C9E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{49BADD41-6850-4049-B333-CC4ADF5F69AD}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\backupDataBase.yml = .github\workflows\backupDataBase.yml
+		.github\workflows\docker.yml = .github\workflows\docker.yml
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
