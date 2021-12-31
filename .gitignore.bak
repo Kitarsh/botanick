@@ -345,4 +345,3 @@ botanick_data.db*
 Migrations/
 /BotANick.Discord/*prod.yml
 /BotANick.Twitch/*prod.yml
-/BotANick.Data/*prod.yml

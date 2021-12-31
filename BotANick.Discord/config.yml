@@ -3,5 +3,6 @@ tokens:
     discord: <token>
 guildsId:
     panini: <id>
+    topten: <id>
 commands:
     panini: <linkInvite>

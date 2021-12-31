@@ -17,6 +17,7 @@ public class Startup
 
         provider.GetRequiredService<RegisterSlashCommandService>();   // Start the register slash command service
 
+        provider.GetRequiredService<TopTenService>();
         provider.GetRequiredService<PaniniService>();
         provider.GetRequiredService<GlobalService>();
 
@@ -34,6 +35,7 @@ public class Startup
                 .AddSingleton(BuildConfiguration())           // Add the configuration to the collection
                 .AddSingleton<RegisterSlashCommandService>()
                 .AddSingleton<GlobalService>()
+                .AddSingleton<TopTenService>()
                 .AddSingleton<PaniniService>();
     }
 

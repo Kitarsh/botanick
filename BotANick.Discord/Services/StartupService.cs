@@ -37,17 +37,5 @@ public class StartupService
         await _discord.StartAsync();                                // Connect to the websocket
 
         //await BoiteAIdeeService.UpdateBoiteIdees();
-        //_discord.Ready += this.RegisterSlashCommand;
     }
-
-    //private async Task RegisterSlashCommand()
-    //{
-    //    var srv = _provider.GetService<RegisterSlashCommandService>();
-    //    if (srv == null)
-    //    {
-    //        throw new ArgumentException("RegisterSlashCommandService is not initialized");
-    //    }
-
-    //    await srv.RegisterSlashCommand();
-    //}
 }
