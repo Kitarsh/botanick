@@ -16,9 +16,10 @@ public class TopTenService
 
         commands = new Dictionary<SubCommand, Func<SocketSlashCommand, Task>>()
         {
-            { TopTenGeneralCommandModel.GenerateGameStartSubCmd(),  GameStartCmd},
-            { TopTenGeneralCommandModel.GenerateRegisterSubCmd(),  RegisterCmd},
-            { TopTenGeneralCommandModel.GeneratePlaySubCmd(),  PlayCmd},
+            { TopTenGeneralCommandModel.GenerateGameStartSubCmd(), GameStartCmd},
+            { TopTenGeneralCommandModel.GenerateRegisterSubCmd(), RegisterCmd},
+            { TopTenGeneralCommandModel.GeneratePlaySubCmd(), PlayCmd},
+            { TopTenGeneralCommandModel.GenerateResultsSubCmd(), ResultsCmd},
         };
 
         Register();
@@ -30,17 +31,18 @@ public class TopTenService
 
     private async Task GameStartCmd(SocketSlashCommand cmd)
     {
-        _toptenGame = new TopTenGameModel();
+        _toptenGame = new TopTenGameModel(cmd);
 
-        await cmd.RespondAsync("Inscrivez-vous avec la commande **/topten register** ! \n \n Les règles du jeu sont en ligne : https://www.cocktailgames.com/wp-content/uploads/2020/01/Top_ten_regles_BD.pdf'");
+        await cmd.RespondAsync(TopTenGameModel.GameStartMsg);
     }
 
     private async Task RegisterCmd(SocketSlashCommand cmd)
     {
         var nickname = await GetNickname(cmd.Channel, cmd.User);
-        _toptenGame.RegisterUser(nickname);
+        _toptenGame.RegisterUser(nickname, cmd);
 
         await cmd.RespondAsync($"Tu es enregistré sous le nom {nickname} !", ephemeral: true);
+        await _toptenGame.ChangeStartMsgWithRegistered();
     }
 
     private async Task PlayCmd(SocketSlashCommand cmd)
@@ -62,9 +64,20 @@ public class TopTenService
             }
         }
         var theme = _toptenGame.GetNextTheme();
-        EmbedBuilder builder = EmbedBuilderService.GenerateBuilderForNumberDisplay(_toptenGame, theme);
+        _toptenGame.GenerateNumbers();
+
+        EmbedBuilder builder = EmbedBuilderService.GenerateBuilderForThemeAndCaptenDisplay(_toptenGame, theme);
 
         await cmd.FollowupAsync(embeds: new Embed[] { builder.Build() });
+    }
+
+    private async Task ResultsCmd(SocketSlashCommand cmd)
+    {
+        var results = _toptenGame.GetResults();
+
+        var builder = EmbedBuilderService.GenerateBuilderForNumberDisplay(results);
+
+        await cmd.RespondAsync(embed: builder.Build());
     }
 
     #endregion Commands
@@ -103,6 +116,11 @@ public class TopTenService
             return;
         }
         var cmd = commands.FirstOrDefault(cmd => cmd.Key.Name == command.Data.Options.FirstOrDefault().Name);
+
+        if (cmd.Equals(default(KeyValuePair<SubCommand, Func<SocketSlashCommand, Task>>)))
+        {
+            return;
+        }
 
         await cmd.Value.Invoke(command);
     }

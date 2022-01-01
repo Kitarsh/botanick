@@ -15,15 +15,22 @@ public class TopTenGameModel
             10,
         };
 
+    public TopTenGameModel(SocketSlashCommand cmd)
+    {
+        this.RegisterSlhCmd = cmd;
+    }
+
     public static Emoji RegisterEmoteChar { get; } = new Emoji(char.ConvertFromUtf32(0x1F4AF));
 
     public static Color ColorTopTen { get; } = new Color(20, 119, 134);
+
+    public static string GameStartMsg { get; } = "Inscrivez-vous avec la commande **/topten register** ! \n \n Les règles du jeu sont en ligne : https://www.cocktailgames.com/wp-content/uploads/2020/01/Top_ten_regles_BD.pdf'";
 
     public int NbsUsers
     {
         get
         {
-            return this.Users.Count;
+            return this.Players.Count;
         }
     }
 
@@ -39,9 +46,9 @@ public class TopTenGameModel
     {
         get
         {
-            if (IndexCapten.HasValue)
+            if (IndexCapten.HasValue && this.Players[IndexCapten.Value].Name != null)
             {
-                return this.Users[IndexCapten.Value];
+                return this.Players[IndexCapten.Value].Name;
             }
             else
             {
@@ -52,29 +59,13 @@ public class TopTenGameModel
 
     public int[] NumberList { get; } = Enumerable.Range(1, 10).ToArray();
 
-    public List<string> Users { get; } = new List<string> { };
+    public List<TopTenPlayerModel> Players { get; } = new List<TopTenPlayerModel> { };
 
     public List<string> Themes { get; set; } = new List<string> { };
 
-    public ulong RegisterMsgId { get; set; }
+    public SocketSlashCommand? RegisterSlhCmd { get; set; }
 
     public int? IndexCapten { get; set; }
-
-    /// <summary>
-    /// Copy to clipboard the generated numbers along with players names
-    /// </summary>
-    /// <param name="Players">List of players.</param>
-    public static string GenerateNumbers(List<string> Players)
-    {
-        StringBuilder bld = new StringBuilder();
-        var numbers = GetRandomList();
-        foreach (var player in Players)
-        {
-            var number = PopFromList(numbers);
-            bld.Append($"\r\n{player} ||`{number:00}`||");
-        }
-        return bld.ToString();
-    }
 
     /// <summary>
     /// Récupère des thèmes aléatoires depuis la base de données.
@@ -97,30 +88,45 @@ public class TopTenGameModel
                              .ToList();
     }
 
-    public void RegisterUser(string player)
+    public void GenerateNumbers()
     {
-        if (!IsUserRegistered(player))
+        var numbers = GetRandomList();
+        foreach (var player in Players)
         {
-            this.Users.Add(player);
+            var number = PopFromList(numbers);
+
+            player.Number = number;
+            _ = player.RespondWithNumber();
         }
     }
 
-    public void RegisterUser(IEnumerable<string> players)
+    public string GetResults()
     {
-        if (players == null || !players.Any())
+        StringBuilder bld = new StringBuilder();
+        var orderedByNumberPlayers = Players.OrderBy(p => p.Name)
+                                            .ToList();
+        foreach (var player in orderedByNumberPlayers)
         {
-            return;
-        }
+            if (player.Name == null)
+            {
+                throw new Exception("Un joueur n'a pas de nom !");
+            }
 
-        foreach (var player in players)
-        {
-            this.RegisterUser(player);
+            bld.Append($"\r\n||`{player.Number:00}`|| : {player.Name} ");
         }
+        return bld.ToString();
     }
 
-    public void ClearUser()
+    public void RegisterUser(string playerName, SocketSlashCommand cmd)
     {
-        this.Users.Clear();
+        if (!IsUserRegistered(playerName))
+        {
+            this.Players.Add(new TopTenPlayerModel
+            {
+                Name = playerName,
+                RegisterSlashCommand = cmd,
+            });
+        }
     }
 
     public void RegisterTheme(string theme)
@@ -139,29 +145,6 @@ public class TopTenGameModel
         {
             this.RegisterTheme(theme);
         }
-    }
-
-    public void ClearTheme()
-    {
-        this.Themes.Clear();
-    }
-
-    public void StoreRegisterMsg(ulong idMsg)
-    {
-        this.RegisterMsgId = idMsg;
-    }
-
-    public void ResetRegisterMsg()
-    {
-        this.RegisterMsgId = 0;
-    }
-
-    public void Clear()
-    {
-        this.ResetRegisterMsg();
-        this.ClearUser();
-        this.ClearTheme();
-        this.ClearCapten();
     }
 
     public void NextCapten()
@@ -184,16 +167,30 @@ public class TopTenGameModel
         }
     }
 
-    public void ClearCapten()
-    {
-        this.IndexCapten = null;
-    }
-
     public string GetNextTheme()
     {
         string themeToReturn = this.Themes[0];
         this.Themes.RemoveAt(0);
         return themeToReturn;
+    }
+
+    public async Task ChangeStartMsgWithRegistered()
+    {
+        if (this.RegisterSlhCmd == null)
+        {
+            return;
+        }
+
+        StringBuilder stgBld = new();
+
+        stgBld.AppendLine(GameStartMsg);
+        stgBld.AppendLine($"Liste des joueurs enregistrés :");
+
+        foreach (var player in this.Players)
+        {
+            stgBld.AppendLine(player.Name);
+        }
+        await this.RegisterSlhCmd.ModifyOriginalResponseAsync(msg => msg.Content = stgBld.ToString());
     }
 
     private static int PopFromList(List<int> numbers)
@@ -205,6 +202,6 @@ public class TopTenGameModel
 
     private bool IsUserRegistered(string player)
     {
-        return this.Users.Contains(player);
+        return this.Players.Select(p => p.Name).Contains(player);
     }
 }

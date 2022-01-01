@@ -45,17 +45,23 @@ public static class ExtensionsEmbedBuilder
 
 public static class EmbedBuilderService
 {
-    public static EmbedBuilder GenerateBuilderForNumberDisplay(TopTenGameModel topTen, string theme)
+    public static EmbedBuilder GenerateBuilderForThemeAndCaptenDisplay(TopTenGameModel topTen, string theme)
     {
-        string numbers = TopTenGameModel.GenerateNumbers(topTen.Users);
-
         var fields = new List<EmbedFieldBuilder>
             {
                 ExtensionsEmbedFieldBuilder.Create("Le thème est le suivant :", theme),
                 ExtensionsEmbedFieldBuilder.Create("Le Cap'TEN est :", topTen.Capten),
-                ExtensionsEmbedFieldBuilder.Create("Tirage des numéros :", string.IsNullOrEmpty(numbers) ? "No players" : numbers),
             };
 
+        return InitBuilder(fields, TopTenGameModel.ColorTopTen);
+    }
+
+    public static EmbedBuilder GenerateBuilderForNumberDisplay(string results)
+    {
+        var fields = new List<EmbedFieldBuilder>
+        {
+            ExtensionsEmbedFieldBuilder.Create("Les résultats :", string.IsNullOrEmpty(results) ? "No players" : results),
+        };
         return InitBuilder(fields, TopTenGameModel.ColorTopTen);
     }
 

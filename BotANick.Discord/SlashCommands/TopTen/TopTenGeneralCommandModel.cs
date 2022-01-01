@@ -5,8 +5,6 @@ public class TopTenGeneralCommandModel : ICommand
     public TopTenGeneralCommandModel()
     {
         SubCommands = new List<SubCommand>();
-
-        //SubCommandGroups = new List<SubCommandGroup>();
     }
 
     public string Name { get; set; }
