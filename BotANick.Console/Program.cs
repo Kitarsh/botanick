@@ -4,14 +4,14 @@ ManualResetEvent _quitEvent = new ManualResetEvent(false);
 
 if (args.Contains("discord"))
 {
-    Startup startup = new();
     Console.WriteLine("Launching Discord");
+    BotANick.Discord.Startup twitch = new();
 }
 
 if (args.Contains("twitch"))
 {
-    // Call BotANick.Twitch
     Console.WriteLine("Launching Twitch");
+    BotANick.Twitch.Startup discord = new();
 }
 
 _quitEvent.WaitOne();

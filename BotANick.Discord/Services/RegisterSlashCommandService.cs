@@ -20,7 +20,7 @@ public class RegisterSlashCommandService
         applicationPaniniSrvCommandProperties = new();
         applicationTopTenSrvCommandProperties = new();
 
-        _discord.Ready += RegisterSlashCommand; // Comment this line in production
+        //_discord.Ready += RegisterSlashCommand; // Comment this line in production
     }
 
     public async Task RegisterSlashCommand()

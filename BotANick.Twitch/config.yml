@@ -1,0 +1,8 @@
+﻿TwitchClient:
+  Username: <BotUsername>
+  OAuthToken: <token>
+  Channel: <targetChannelName>
+Api:
+  ClientId: <client_id>
+  Secret: <client_secret>
+  StreamId: <stream_id>

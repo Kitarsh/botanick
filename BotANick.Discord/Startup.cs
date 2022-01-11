@@ -22,6 +22,8 @@ public class Startup
         provider.GetRequiredService<GlobalService>();
 
         provider.GetRequiredService<StartupService>().Start();       // Start the startup service
+
+        TwitchLogsService.SetDiscordClient(provider.GetService<DiscordSocketClient>());
         return provider;
     }
 

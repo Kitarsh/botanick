@@ -7,9 +7,11 @@ namespace BotANick.Data
 {
     public class BotANickContext : DbContext
     {
-        public DbSet<TopTenTheme> TopTenTheme { get; set; }
+        public DbSet<TopTenTheme> TopTenThemes { get; set; }
 
-        public DbSet<Idee> Idee { get; set; }
+        public DbSet<Idee> Idees { get; set; }
+
+        public DbSet<TwitchCommand> TwitchCommands { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

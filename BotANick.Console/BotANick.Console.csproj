@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BotANick.Discord\BotANick.Discord.csproj" />
+    <ProjectReference Include="..\BotANick.Twitch\BotANick.Twitch.csproj" />
   </ItemGroup>
 
 </Project>

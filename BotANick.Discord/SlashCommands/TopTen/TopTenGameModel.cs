@@ -75,7 +75,7 @@ public class TopTenGameModel
     {
         Random rand = new Random();
 
-        return dbContext.TopTenTheme.AsEnumerable()
+        return dbContext.TopTenThemes.AsEnumerable()
                                     .Select(ttt => ttt.Theme)
                                     .OrderBy(t => rand.Next())
                                     .ToList();
