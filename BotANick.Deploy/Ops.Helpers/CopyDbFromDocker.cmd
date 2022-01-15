@@ -1,4 +1,4 @@
-docker cp nervous_shockley:/App/BotANick.Core/botanick_data.db D:\BotANick.BackUp\
+docker cp botanickContainer:/App/botanick_data.db /home/pi/botanickBackup
 
 :: Change db backup name with timecode.
 SET HOUR=%time:~0,2%

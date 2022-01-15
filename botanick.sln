@@ -1,24 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30621.155
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotANick.Core", "BotANick.Core\BotANick.Core.csproj", "{5150D9B6-D40F-4C5C-ABBB-EE37A76AF578}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotANick.Console", "BotANick.Console\BotANick.Console.csproj", "{D2BFCD30-A1F8-4D5F-AC4C-5F9B67A7FF73}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2F204760-925D-4EF9-98D2-18AE79E1E347} = {2F204760-925D-4EF9-98D2-18AE79E1E347}
+		{A39643E4-DD8A-42EE-84CC-6EF117A7E8AF} = {A39643E4-DD8A-42EE-84CC-6EF117A7E8AF}
+	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotANick.Discord", "BotANick.Discord\BotANick.Discord.csproj", "{47605EEB-07D1-40E7-9F59-95E70C97D65E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotANick.Discord", "BotANick.Discord\BotANick.Discord.csproj", "{DF694B81-945B-4D9A-8E76-E679A954C9E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotANick.Twitch", "BotANick.Twitch\BotANick.Twitch.csproj", "{F6F185FF-58D6-48E2-8C3F-7B391E81F16A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainConsole", "BotANick.MainConsole\MainConsole.csproj", "{A6B3C066-E75D-457D-A644-1AFD4E5617D8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{337FF2AF-0E92-4519-B5CC-B0AF9890CCFE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{49BADD41-6850-4049-B333-CC4ADF5F69AD}"
 	ProjectSection(SolutionItems) = preProject
-		CodeMaid.config = CodeMaid.config
+		.github\workflows\backupDataBase.yml = .github\workflows\backupDataBase.yml
 		.github\workflows\docker.yml = .github\workflows\docker.yml
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotANick.Tests", "BotANick.Tests\BotANick.Tests.csproj", "{48EF189D-90CD-41D7-B72A-D56CB1B0F2ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotANick.Data", "BotANick.Data\BotANick.Data.csproj", "{2F204760-925D-4EF9-98D2-18AE79E1E347}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotANick.Twitch", "BotANick.Twitch\BotANick.Twitch.csproj", "{A39643E4-DD8A-42EE-84CC-6EF117A7E8AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,31 +28,27 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5150D9B6-D40F-4C5C-ABBB-EE37A76AF578}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5150D9B6-D40F-4C5C-ABBB-EE37A76AF578}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5150D9B6-D40F-4C5C-ABBB-EE37A76AF578}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5150D9B6-D40F-4C5C-ABBB-EE37A76AF578}.Release|Any CPU.Build.0 = Release|Any CPU
-		{47605EEB-07D1-40E7-9F59-95E70C97D65E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{47605EEB-07D1-40E7-9F59-95E70C97D65E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{47605EEB-07D1-40E7-9F59-95E70C97D65E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{47605EEB-07D1-40E7-9F59-95E70C97D65E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F6F185FF-58D6-48E2-8C3F-7B391E81F16A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F6F185FF-58D6-48E2-8C3F-7B391E81F16A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F6F185FF-58D6-48E2-8C3F-7B391E81F16A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F6F185FF-58D6-48E2-8C3F-7B391E81F16A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A6B3C066-E75D-457D-A644-1AFD4E5617D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A6B3C066-E75D-457D-A644-1AFD4E5617D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A6B3C066-E75D-457D-A644-1AFD4E5617D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A6B3C066-E75D-457D-A644-1AFD4E5617D8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48EF189D-90CD-41D7-B72A-D56CB1B0F2ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48EF189D-90CD-41D7-B72A-D56CB1B0F2ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48EF189D-90CD-41D7-B72A-D56CB1B0F2ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48EF189D-90CD-41D7-B72A-D56CB1B0F2ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2BFCD30-A1F8-4D5F-AC4C-5F9B67A7FF73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2BFCD30-A1F8-4D5F-AC4C-5F9B67A7FF73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2BFCD30-A1F8-4D5F-AC4C-5F9B67A7FF73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2BFCD30-A1F8-4D5F-AC4C-5F9B67A7FF73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF694B81-945B-4D9A-8E76-E679A954C9E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF694B81-945B-4D9A-8E76-E679A954C9E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF694B81-945B-4D9A-8E76-E679A954C9E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF694B81-945B-4D9A-8E76-E679A954C9E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F204760-925D-4EF9-98D2-18AE79E1E347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F204760-925D-4EF9-98D2-18AE79E1E347}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F204760-925D-4EF9-98D2-18AE79E1E347}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F204760-925D-4EF9-98D2-18AE79E1E347}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A39643E4-DD8A-42EE-84CC-6EF117A7E8AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A39643E4-DD8A-42EE-84CC-6EF117A7E8AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A39643E4-DD8A-42EE-84CC-6EF117A7E8AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A39643E4-DD8A-42EE-84CC-6EF117A7E8AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {784AAE78-DC5A-4C0D-A1F8-4837E55358DC}
+		SolutionGuid = {7A461C5A-76B5-482C-B1BD-E35BB753597E}
 	EndGlobalSection
 EndGlobal

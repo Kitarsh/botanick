@@ -1,4 +1,8 @@
 ﻿﻿prefix: "!"
 tokens:
     discord: <token>
-    github: <token>
+guildsId:
+    panini: <id>
+    topten: <id>
+commands:
+    panini: <linkInvite>

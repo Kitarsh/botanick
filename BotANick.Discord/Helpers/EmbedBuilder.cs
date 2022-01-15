@@ -1,0 +1,90 @@
+﻿namespace BotANick.Discord.Helpers;
+
+public static class ExtensionsEmbedFieldBuilder
+{
+    public static string ToString(this EmbedFieldBuilder efb)
+    {
+        return $"{efb.Name}, {efb.Value}";
+    }
+
+    public static EmbedFieldBuilder Create(string Name, string Value)
+    {
+        var fieldBuilder = new EmbedFieldBuilder
+        {
+            Name = Name,
+            Value = Value
+        };
+        return fieldBuilder;
+    }
+}
+
+public static class ExtensionsEmbedBuilder
+{
+    public static string ToStringCustom(this EmbedBuilder eb)
+    {
+        var fieldsStringList = new List<string>();
+
+        foreach (var field in eb.Fields)
+        {
+            fieldsStringList.Add(ExtensionsEmbedFieldBuilder.ToString(field));
+        }
+
+        return $"{eb.Title}, {eb.Description}, {eb.Color}, {eb.Author}, {string.Join(", ", fieldsStringList)}, {eb.Url}";
+    }
+
+    public static void AddFieldWithValue(this EmbedBuilder builder, string name, string value)
+    {
+        builder.AddField(f =>
+        {
+            f.IsInline = true;
+            f.Name = name;
+            f.Value = value;
+        });
+    }
+}
+
+public static class EmbedBuilderService
+{
+    public static EmbedBuilder GenerateBuilderForThemeAndCaptenDisplay(TopTenGameModel topTen, string theme)
+    {
+        var fields = new List<EmbedFieldBuilder>
+            {
+                ExtensionsEmbedFieldBuilder.Create("Le thème est le suivant :", theme),
+                ExtensionsEmbedFieldBuilder.Create("Le Cap'TEN est :", topTen.Capten),
+            };
+
+        return InitBuilder(fields, TopTenGameModel.ColorTopTen);
+    }
+
+    public static EmbedBuilder GenerateBuilderForNumberDisplay(string results)
+    {
+        var fields = new List<EmbedFieldBuilder>
+        {
+            ExtensionsEmbedFieldBuilder.Create("Les résultats :", string.IsNullOrEmpty(results) ? "No players" : results),
+        };
+        return InitBuilder(fields, TopTenGameModel.ColorTopTen);
+    }
+
+    public static EmbedBuilder InitBuilder(List<EmbedFieldBuilder> fields, Color colorTopTen, string Description = null)
+    {
+        return new EmbedBuilder()
+        {
+            Title = "TopTen",
+            Color = colorTopTen,
+            Description = Description,
+            Fields = fields
+        };
+    }
+
+    public static EmbedBuilder GenerateBuilderReadRegister(List<string> users, Color colorTopTen)
+    {
+        string playersString = string.Join("\n    ", users);
+        var fields = new List<EmbedFieldBuilder>
+            {
+                ExtensionsEmbedFieldBuilder.Create("Liste des joueurs :", string.IsNullOrEmpty(playersString) ? "No Players" : playersString),
+            };
+
+        EmbedBuilder builder = InitBuilder(fields, colorTopTen);
+        return builder;
+    }
+}
